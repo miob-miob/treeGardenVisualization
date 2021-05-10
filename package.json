@@ -1,0 +1,47 @@
+{
+  "name": "treegardenvisualization",
+  "version": "0.0.1",
+  "description": "React components for treeGarden visualization",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test",
+    "build": "WEBPACK_BUILD_MODE=production && webpack",
+    "typeCheck": "tsc --noEmit true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miob-miob/treeGardenVisualization.git"
+  },
+  "keywords": [
+    "AI",
+    "decision",
+    "trees"
+  ],
+  "author": "Michal Oboril",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/miob-miob/treeGardenVisualization/issues"
+  },
+  "homepage": "https://github.com/miob-miob/treeGardenVisualization#readme",
+  "dependencies": {
+    "react": "^17.0.2",
+    "ts-node": "^9.1.1",
+    "webpack": "^5.37.0"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.5",
+    "@types/webpack": "^5.28.0",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
+    "eslint": "^7.26.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "ts-loader": "^9.1.2",
+    "typescript": "^4.2.4",
+    "webpack-cli": "^4.7.0"
+  }
+}

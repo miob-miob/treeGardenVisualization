@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "target": "es5",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": true,
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "noEmit": false,
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "esModuleInterop": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["dist", "node_modules"]
+}
