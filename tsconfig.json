@@ -20,7 +20,8 @@
     "noEmit": false,
     "resolveJsonModule": true,
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"

@@ -1,3 +1,1 @@
-import {TreeGardenVisualization} from './components/MainBoard'
-
-console.log(TreeGardenVisualization)
+export { TreeGardenVisualization } from './components/MainBoard';

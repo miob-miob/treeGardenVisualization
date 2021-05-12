@@ -1,24 +1,23 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
+  extends: "airbnb-typescript/base",
+  globals: {
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly',
   },
-  extends: [
-    'plugin:react/recommended',
-    'airbnb',
-  ],
-  parser: '@typescript-eslint/parser',
+  ignorePatterns:['./dist/**','./node_modules/**'],
+  plugins: ['eslint-plugin-import'],
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 12,
-    sourceType: 'module',
+    project: './tsconfig.json',
   },
-  plugins: [
-    'react',
-    '@typescript-eslint',
-  ],
   rules: {
+
+    "import/extensions": "off",
+    'no-multiple-empty-lines':[2, { "max": 2 }],
+    "linebreak-style": [0],
+    'import/no-default-export':2,
+    'import/prefer-default-export':0,
+    "@typescript-eslint/comma-dangle": ["error", "never"],
+    "max-len": ["error", { "code": 170 }],
+    'no-unused-vars': ["error", { "args": "none" }]
   },
 };
