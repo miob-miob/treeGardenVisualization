@@ -1,14 +1,10 @@
 import React from 'react';
 import { TrainedTreeInput } from './TrainedTreeInput';
 
-type Props = {
-  name?: string
-};
 
-
-export const TreeGardenVisualization = ({ name = 'sulda' }:Props) => (
+export const TreeGardenVisualization = () => (
   <div>
-    <h2>{`Welcome  too the hell!!${name}`}</h2>
+    <h2>{'Welcome  too the hell!!'}</h2>
     <TrainedTreeInput id={'susu'}/>
   </div>
 );

@@ -10,4 +10,4 @@ const playgroundContainer = document.createElement('div');
 playgroundContainer.id = 'appContainer';
 
 body.appendChild(playgroundContainer);
-ReactDom.render(TreeGardenVisualization({}), playgroundContainer);
+ReactDom.render(TreeGardenVisualization(), playgroundContainer);
