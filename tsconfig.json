@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "target": "es5",
+    "target": "es6",
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
@@ -19,7 +18,7 @@
     "noUnusedLocals": false,
     "noEmit": false,
     "resolveJsonModule": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "esModuleInterop": true,
     "skipLibCheck": true
   },

@@ -6,6 +6,31 @@ import {Configuration  as DevServerConfig} from 'webpack-dev-server'
 
 export default (env:Record<string, string>)=>{
   const buildMode = (env.WEBPACK_BUILD_MODE ?? "development") as "development" | "production";
+  const isProduction = buildMode === "production";
+
+
+  const babelConfig = {
+    presets: [
+      '@babel/preset-env',
+      '@babel/preset-typescript',
+      '@babel/preset-react'
+    ],
+    plugins: [
+      [
+        'babel-plugin-styled-components',
+        {
+          ssr: false,
+          displayName: true
+        }
+      ],
+    ] as (string|Array<string|object>)[]
+  };
+
+  if(!isProduction){
+    babelConfig.plugins.push('babel-plugin-typescript-to-proptypes')
+  }
+
+
 
   const devServerSetting ={
     contentBase: path.join(__dirname, 'dist'),
@@ -18,9 +43,9 @@ export default (env:Record<string, string>)=>{
     mode: buildMode,
 
     devServer: devServerSetting,
-    devtool: 'inline-source-map',
+    devtool: (!isProduction)?'inline-source-map':false,
     entry: {
-      shared: ['react', 'react-dom'],
+      shared: ['react', 'react-dom','styled-components'],
       index: {
         import: './src/index.ts',
         dependOn: 'shared',
@@ -37,9 +62,12 @@ export default (env:Record<string, string>)=>{
       rules: [
         {
           test: /\.tsx?$/,
-          use: 'ts-loader',
           exclude: /node_modules/,
-        },
+          use: [
+            {loader: 'babel-loader', options: babelConfig},
+          ]
+
+        }
       ],
     },
     resolve: {
