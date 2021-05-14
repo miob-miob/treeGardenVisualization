@@ -11,7 +11,7 @@ const Container = styled.div`
 export const TrainedTreeInput = () => (
     <Container>
       <Button >Push me!</Button>
-      <Button >Push me!</Button>
+      <Button negative={true} >Push me!</Button>
       <Button >Push me!</Button>
     </Container>
 

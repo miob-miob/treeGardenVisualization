@@ -5,8 +5,8 @@ import { TrainedTreeInput } from './TrainedTreeInput';
 import { GlobalStyle } from '../globalStyle';
 
 const MainContainer = styled.div`
-  background-color: ${({ theme }) => theme.secondaryBackground};
-  color: ${({ theme }) => theme.texts};
+  background-color: ${({ theme }) => theme.color1};
+  color: ${({ theme }) => theme.color4};
   //padding: 2em;
   display: flex;
   flex-flow: column;
