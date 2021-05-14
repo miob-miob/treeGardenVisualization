@@ -1,10 +1,11 @@
 
 
 export const treeGardenTheme = {
-  primaryBackground: '#fbfbfb',
-  secondaryBackground: '#eaeaea',
+  primaryBackground: '#eaeaea',
+  secondaryBackground: '#fdfdfd',
+
   border: '#7d7d7d',
-  texts: '#585858',
+  texts: '#484848',
   sizes: {
     buttonBorderRadius: '3px',
     buttonBorderWidth: '2px'
