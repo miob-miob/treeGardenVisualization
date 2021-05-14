@@ -4,7 +4,7 @@ type Props = {
   negative?:boolean,
   disabled?:boolean
 };
-// todo what abut color1 color2 color3
+
 export const Button = styled.button<Props>`
   background-color: ${({ theme, negative }) => (negative ? theme.color4 : theme.color1)};
   padding: 1em 2em;
