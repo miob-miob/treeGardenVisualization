@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from './shared/Button';
 
-const MyDiv = styled.div`
-  color: #5555ee;
-  background-color: #ffaaaa;
+const Container = styled.div`
+  width: 50vw;
+  display: flex;
+  justify-content: space-between;
 `;
 
-type Props = {
-  color?:string,
-  id:string
-};
-export const TrainedTreeInput = ({ id, color = 'black' }:Props) => (
-  <MyDiv>
-    <div>{`There will be input with id: ${id}`}</div>
-    <div>{`Color will be: ${color}`}</div>
-  </MyDiv>
+export const TrainedTreeInput = () => (
+    <Container>
+      <Button >Push me!</Button>
+      <Button >Push me!</Button>
+      <Button >Push me!</Button>
+    </Container>
+
 );
