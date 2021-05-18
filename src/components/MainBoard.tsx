@@ -3,6 +3,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import { treeGardenTheme } from '../theme';
 import { TrainedTreeInput } from './TrainedTreeInput';
 import { GlobalStyle } from '../globalStyle';
+import { Header } from './Header';
+import { AppDataContextProvider } from '../state';
 
 const MainContainer = styled.div`
   background-color: ${({ theme }) => theme.color1};
@@ -12,16 +14,19 @@ const MainContainer = styled.div`
   flex-flow: column;
   align-items: center;
   width: 100%;
-  height: 100%
+  height: 100%;
+  font-family: sans-serif;
 `;
 
 export const TreeGardenVisualization = () => (
     <ThemeProvider theme={treeGardenTheme as any}>
-      <GlobalStyle/>
-      <MainContainer>
-        <h2>{'Welcome  too the hell!!'}</h2>
-        <TrainedTreeInput />
-      </MainContainer>
+      <AppDataContextProvider>
+        <GlobalStyle/>
+        <MainContainer>
+          <Header/>
+          <TrainedTreeInput />
+        </MainContainer>
+      </AppDataContextProvider>
     </ThemeProvider>
 );
 

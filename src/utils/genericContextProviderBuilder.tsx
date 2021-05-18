@@ -12,7 +12,6 @@ export const genericHookContextBuilder = <T, P>(hook: () => T) => {
     Context,
     ContextProvider: (props: Props & P) => {
       const value = hook();
-
       return <Context.Provider value={value}>{props.children}</Context.Provider>;
     }
   };

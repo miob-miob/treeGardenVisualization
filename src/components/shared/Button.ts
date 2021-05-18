@@ -14,7 +14,6 @@ export const Button = styled.button<Props>`
   cursor: pointer;
   transition: background-color 0.4s ease;
   &:hover{
-    
     background-color: ${({ theme, negative }) => (negative ? theme.color3 : theme.color2)};
   }
   &:active{
