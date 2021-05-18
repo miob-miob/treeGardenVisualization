@@ -8,7 +8,7 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -20,7 +20,7 @@
     "resolveJsonModule": true,
     "jsx": "preserve",
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "include": [
     "src/**/*"

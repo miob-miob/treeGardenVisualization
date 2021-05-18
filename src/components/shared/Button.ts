@@ -12,9 +12,12 @@ export const Button = styled.button<Props>`
   border: ${({ theme }) => `${theme.sizes.buttonBorderWidth} solid ${theme.color3}`};
   border-radius: ${(props) => props.theme.sizes.buttonBorderRadius};
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.4s ease;
   &:hover{
     
     background-color: ${({ theme, negative }) => (negative ? theme.color3 : theme.color2)};
+  }
+  &:active{
+    border-color: ${({ theme }) => theme.color4}
   }
 `;
