@@ -9,5 +9,9 @@ export const treeGardenTheme = {
   sizes: {
     buttonBorderRadius: '3px',
     buttonBorderWidth: '2px'
+  },
+  otherColors: {
+    errorBorder: '#aa0000'
   }
+
 };

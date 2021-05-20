@@ -7,7 +7,8 @@ type Props = {
 
 export const Button = styled.button<Props>`
   background-color: ${({ theme, negative }) => (negative ? theme.color4 : theme.color1)};
-  padding: 1em 2em;
+  padding: 0.9em 2em;
+  width: 10em;
   color: ${({ theme, negative }) => (negative ? theme.color1 : theme.color4)};
   border: ${({ theme }) => `${theme.sizes.buttonBorderWidth} solid ${theme.color3}`};
   border-radius: ${(props) => props.theme.sizes.buttonBorderRadius};

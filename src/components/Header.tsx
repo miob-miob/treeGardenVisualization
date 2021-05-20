@@ -34,7 +34,7 @@ const Right = styled.div`
 `;
 
 
-const Title = styled.h2`
+const Title = styled.h1`
   display: flex;
   align-items: center;
   height: ${height};
