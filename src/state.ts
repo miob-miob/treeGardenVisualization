@@ -5,7 +5,7 @@ import { TreeGardenDataSample } from 'tree-garden/dist/dataSet';
 import { genericHookContextBuilder } from './utils/genericContextProviderBuilder';
 
 let errorCounter = 0;
-const errorShownDuration = 3 * 1000; // milliseconds
+const errorShownDuration = 3.5 * 1000; // milliseconds
 const maxErrors = 4;
 const useAppData = () => {
   const [currentTree, setCurrentTree] = useState(null as TreeGardenNode|TreeGardenNode[]|null);
@@ -16,15 +16,7 @@ const useAppData = () => {
 
     const errorId = errorCounter;
     errorCounter += 1;
-
-    setErrors((oldErrors) => {
-      // ensure correct number throw away oldest
-      const errosWithRemovedOldes = oldErrors
-        .reverse()
-        .slice(0, maxErrors - 1)
-        .reverse();
-      return [[errorId, newError], ...errosWithRemovedOldes];
-    });
+    setErrors((oldErrors) => [[errorId, newError] as [number, string], ...oldErrors].slice(0, maxErrors));
     // let it disappear after timeout
     setTimeout(() => {
       setErrors((oldErrors) => oldErrors.filter(([errId]) => errId !== errorId));
