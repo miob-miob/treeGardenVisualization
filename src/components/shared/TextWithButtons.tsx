@@ -12,7 +12,7 @@ export const TextArea = styled.textarea<{ isError:boolean }>`
   min-height: 13em;
   padding: 1em;
   border: 2px solid ${({ theme, isError }) => (isError ? theme.otherColors.errorBorder : theme.color3)};
-  border-radius: ${(props) => props.theme.sizes.buttonBorderRadius};
+  border-radius: ${(props) => props.theme.sizes.borderRadius};
   resize: none;
   outline:  none;
   white-space: nowrap;

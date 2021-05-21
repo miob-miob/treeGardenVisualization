@@ -4,6 +4,7 @@ import { treeGardenTheme } from '../theme';
 import { TrainedTreeInput } from './TrainedTreeInput';
 import { GlobalStyle } from '../globalStyle';
 import { Header } from './Header';
+import { Errors } from './Errors';
 import { AppDataContextProvider } from '../state';
 
 const MainContainer = styled.div`
@@ -23,6 +24,7 @@ export const TreeGardenVisualization = () => (
       <AppDataContextProvider>
         <GlobalStyle/>
         <MainContainer>
+          <Errors/>
           <Header/>
           <TrainedTreeInput />
         </MainContainer>

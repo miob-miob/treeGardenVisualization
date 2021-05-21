@@ -7,8 +7,8 @@ export const treeGardenTheme = {
   color3: '#7d7d7d',
   color4: '#484848',
   sizes: {
-    buttonBorderRadius: '3px',
-    buttonBorderWidth: '2px'
+    borderRadius: '3px',
+    borderWidth: '2px'
   },
   otherColors: {
     errorBorder: '#aa0000'

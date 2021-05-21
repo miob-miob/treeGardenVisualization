@@ -21,29 +21,32 @@ const Title = styled.h3`
 `;
 
 export const TrainedTreeInput = () => {
-  const { setCurrentTree } = useContext(AppDataContext);
+  const { setCurrentTree, addError } = useContext(AppDataContext);
   const [rawText, setRawText] = useState('');
-  const [error, setError] = useState(null as string|null);
+  const [error, setError] = useState(false);
+
   const onTreeLoad = () => {
     try {
-      setError(null);
+      setError(false);
       const tree = JSON.parse(rawText);
       setRawText(JSON.stringify(tree, null, 2));
       setCurrentTree(tree as TreeGardenNode);
     } catch (e) {
-      const errorText = `Not valid JSON format: ${e}`;
-      setError(errorText);
-      console.warn(errorText);
+      addError(`Not valid\n JSON format: ${e}`);
+      setError(true);
     }
   };
 
   const onClear = () => {
-    setError(null);
+    setError(false);
+    setCurrentTree(null);
+    setRawText('');
   };
+
   return (
     <Container>
       <Title>Trained Tree</Title>
-      <TextAndButtons currentText={rawText} onChange={(text) => setRawText(text)} isError={!!error}>
+      <TextAndButtons currentText={rawText} onChange={(text) => setRawText(text)} isError={error}>
         <Button onClick={onTreeLoad}>Load tree</Button>
         <Button onClick={onClear}>Clear</Button>
       </TextAndButtons>

@@ -10,8 +10,8 @@ export const Button = styled.button<Props>`
   padding: 0.9em 2em;
   width: 10em;
   color: ${({ theme, negative }) => (negative ? theme.color1 : theme.color4)};
-  border: ${({ theme }) => `${theme.sizes.buttonBorderWidth} solid ${theme.color3}`};
-  border-radius: ${(props) => props.theme.sizes.buttonBorderRadius};
+  border: ${({ theme }) => `${theme.sizes.borderWidth} solid ${theme.color3}`};
+  border-radius: ${(props) => props.theme.sizes.borderRadius};
   cursor: pointer;
   transition: background-color 0.4s ease;
   &:hover{
