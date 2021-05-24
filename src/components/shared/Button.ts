@@ -6,6 +6,8 @@ type Props = {
 };
 
 export const Button = styled.button<Props>`
+  display: flex;
+  justify-content: center;
   background-color: ${({ theme, negative }) => (negative ? theme.color4 : theme.color1)};
   padding: 0.9em 2em;
   width: 10em;
@@ -14,6 +16,7 @@ export const Button = styled.button<Props>`
   border-radius: ${(props) => props.theme.sizes.borderRadius};
   cursor: pointer;
   transition: background-color 0.4s ease;
+  white-space: nowrap;
   &:hover{
     background-color: ${({ theme, negative }) => (negative ? theme.color3 : theme.color2)};
   }

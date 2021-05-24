@@ -20,18 +20,22 @@ const Title = styled.h3`
   margin-top: 0.2em;
 `;
 
-export const TrainedTreeInput = () => {
-  const { setCurrentTree, addError } = useContext(AppDataContext);
+export const DataSampleInput = () => {
+  const { setCurrentSample, currentTree, addError } = useContext(AppDataContext);
   const [rawText, setRawText] = useState('');
   const [error, setError] = useState(false);
 
-  const onTreeLoad = () => {
+  const onSampleLoad = () => {
+    if (!currentTree) {
+      setError(true);
+      addError('You must load trained tree prior to sample classification!');
+      return;
+    }
     try {
       setError(false);
-      setCurrentTree(null);
-      const tree = JSON.parse(rawText);
-      setRawText(JSON.stringify(tree, null, 2));
-      setCurrentTree(tree as TreeGardenNode);
+      const dataSample = JSON.parse(rawText);
+      setRawText(JSON.stringify(dataSample, null, 2));
+      setCurrentSample(dataSample as TreeGardenNode);
     } catch (e) {
       addError(`Not valid\n JSON format: ${e}`);
       setError(true);
@@ -40,15 +44,15 @@ export const TrainedTreeInput = () => {
 
   const onClear = () => {
     setError(false);
-    setCurrentTree(null);
+    setCurrentSample(null);
     setRawText('');
   };
 
   return (
     <Container>
-      <Title>Trained Tree</Title>
+      <Title>Sample to classify</Title>
       <TextAndButtons currentText={rawText} onChange={(text) => setRawText(text)} isError={error}>
-        <Button onClick={onTreeLoad}>Load tree</Button>
+        <Button onClick={onSampleLoad}>Classify Sample</Button>
         <Button onClick={onClear}>Clear</Button>
       </TextAndButtons>
     </Container>

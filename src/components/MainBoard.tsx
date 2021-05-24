@@ -6,6 +6,7 @@ import { GlobalStyle } from '../globalStyle';
 import { Header } from './Header';
 import { Errors } from './Errors';
 import { AppDataContextProvider } from '../state';
+import { DataSampleInput } from './DataSampleInput';
 
 const MainContainer = styled.div`
   background-color: ${({ theme }) => theme.color1};
@@ -19,6 +20,17 @@ const MainContainer = styled.div`
   font-family: sans-serif;
 `;
 
+
+const InputsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  width: 100vw;
+  margin-top: 4em;
+  justify-content: center;
+  gap: 2em;
+`;
+
+
 export const TreeGardenVisualization = () => (
     <ThemeProvider theme={treeGardenTheme as any}>
       <AppDataContextProvider>
@@ -26,7 +38,11 @@ export const TreeGardenVisualization = () => (
         <MainContainer>
           <Errors/>
           <Header/>
-          <TrainedTreeInput />
+          <InputsContainer>
+            <TrainedTreeInput />
+            <DataSampleInput/>
+          </InputsContainer>
+
         </MainContainer>
       </AppDataContextProvider>
     </ThemeProvider>
