@@ -35,6 +35,7 @@ const ExclamationMark = styled.div`
 const ErrorText = styled.div`
   max-height: ${errorItemHeight};
   display: flex;
+  width: 100%;
   justify-content: center;
   font-size: small;
   padding: 1em;

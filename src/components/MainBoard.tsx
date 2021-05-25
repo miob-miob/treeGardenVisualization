@@ -7,6 +7,7 @@ import { Header } from './Header';
 import { Errors } from './Errors';
 import { AppDataContextProvider } from '../state';
 import { DataSampleInput } from './DataSampleInput';
+import { TreeVisualization } from './TreeVisualization';
 
 const MainContainer = styled.div`
   background-color: ${({ theme }) => theme.color1};
@@ -42,6 +43,8 @@ export const TreeGardenVisualization = () => (
             <TrainedTreeInput />
             <DataSampleInput/>
           </InputsContainer>
+
+          <TreeVisualization/>
 
         </MainContainer>
       </AppDataContextProvider>
