@@ -7,7 +7,7 @@ import { Header } from './Header';
 import { Errors } from './Errors';
 import { AppDataContextProvider } from '../state';
 import { DataSampleInput } from './DataSampleInput';
-import { TreeVisualization } from './TreeVisualization';
+import { TreeVisualization } from './TreesVisualization/TreeVisualization';
 
 const MainContainer = styled.div`
   background-color: ${({ theme }) => theme.color1};

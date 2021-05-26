@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { AppDataContext } from '../state';
+import { AppDataContext } from '../../state';
 
 
 const MainContainer = styled.div`
@@ -13,9 +13,20 @@ const MainContainer = styled.div`
 `;
 
 const Title = styled.h3<{ doWeHaveTree:boolean }>`
-  padding: 1em;
-  margin-top: 1em;
-  color: ${({ theme, doWeHaveTree }) => (doWeHaveTree ? theme.color4 : theme.color3)};
+
+`;
+
+const MainSvgContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+`;
+
+const MainSvg = styled.svg<{ zoom:number }>`
+  transform: scale(${({ zoom }) => zoom});
+
 `;
 
 
@@ -32,7 +43,7 @@ const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max -
 
 // eslint-disable-next-line max-len
 const randColor = () => `#${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}`;
-const circles = new Array(10)
+const circles = new Array(333)
   .fill(1)
   .map(() => ({
     x: randNumber(0, 1000),
@@ -52,11 +63,14 @@ export const TreeVisualization = () => {
       <Title doWeHaveTree={doWeHaveTree}>{`${doWeHaveTree ? 'Visualization of loaded tree' : 'No tree for visualization'}`}</Title>
       {doWeHaveTree
       && (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width={`${100 * counter}%`} height={`${100 * counter}%`}>
-          {
-            circles.map(({ x, y, color }) => <circle r={10} cx={x} cy={y} fill={color}/>)
-          }
-        </svg>
+        <MainSvgContainer>
+          <MainSvg zoom={counter} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width={'100%'} >
+            {
+              circles.map(({ x, y, color }) => <circle r={10} cx={x} cy={y} fill={color}/>)
+            }
+          </MainSvg>
+        </MainSvgContainer>
+
       )}
 
     </MainContainer>
