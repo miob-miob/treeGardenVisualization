@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-// crafted by Jakub Svehla
+// crafted with love by Jakub Svehla
 type Props = {
   children: React.ReactNode
 };

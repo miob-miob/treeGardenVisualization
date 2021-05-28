@@ -27,10 +27,13 @@ const MainSvgContainer = styled.div`
 const MainSvg = styled.svg<{ zoom:number }>`
   transform-origin: left top;
   margin:auto;
+  // todo investigate possibility of usage dynamic transform-origin according to mouse
+  // todo use width, height + make it proportionally shifted with translate + also set scrollbars 
+  //transform: scale(${({ zoom }) => zoom}) translate(${({ zoom }) => zoom * 10}%, ${({ zoom }) => zoom * 10}%);
   transform: scale(${({ zoom }) => zoom});
   width: ${getVisualizationElementSize()};
   height: ${getVisualizationElementSize()}
-  //overflow: auto;
+  overflow: auto;
 `;
 
 
@@ -47,7 +50,7 @@ const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max -
 
 // eslint-disable-next-line max-len
 const randColor = () => `#${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}`;
-const circles = new Array(333)
+const circles = new Array(999)
   .fill(1)
   .map(() => ({
     x: randNumber(0, 1000),
