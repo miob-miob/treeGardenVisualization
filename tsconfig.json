@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "target": "es6",
+    "lib": ["ES2019"],
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,

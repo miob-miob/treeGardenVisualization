@@ -1,12 +1,15 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
+import { TreeGardenNode } from 'tree-garden';
 import { AppDataContext } from '../../state';
 import { VisualizationHeader } from './VisualizationHeader';
+import { Tree } from './TreeSvg';
 
 const getVisualizationElementSize = (number = 85) => (window.innerWidth > window.innerHeight ? `${number}vh` : `${number}vw`);
 
 const MainContainer = styled.div`
   display: flex;
+  margin-bottom: 1em;
   flex-direction: column;
   align-items: center;
   //background-color: ${({ theme }) => theme.color2};
@@ -50,30 +53,13 @@ const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max -
 
 // eslint-disable-next-line max-len
 const randColor = () => `#${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}`;
-const circles = new Array(999)
+const circles = new Array(1)
   .fill(1)
   .map(() => ({
     x: randNumber(0, 1000),
     y: randNumber(0, 1000),
     color: randColor()
   }));
-
-type Props = {
-  x:number,
-  y:number,
-  width:number,
-  height:number,
-};
-
-// todo this is concept of tree item vizualization
-const Tree = ({
-  x, y, width, height
-}:Props) => (
-  <svg viewBox="0 0 100 100" x={x} y={y} width={width} height={height}>
-    <circle r={(Math.sqrt(2) * 100) / 2} cx={0} cy={0} fill={'#ff55aa'}/>
-    <circle r={(Math.sqrt(2) * 100) / 2} cx={100} cy={100} fill={'#aaff55'}/>
-  </svg>
-);
 
 
 export const TreeVisualization = () => {
@@ -90,8 +76,7 @@ export const TreeVisualization = () => {
             {
               circles.map(({ x, y, color }, index) => <circle key={index} r={10} cx={x} cy={y} fill={color}/>)
             }
-            <Tree x={10} y={10} width={400} height={400}/>
-            <Tree x={700} y={100} width={100} height={100}/>
+            <Tree tree={currentTree as TreeGardenNode} x={0} y={0} width={1000} height={1000}/>
           </MainSvg>
         </MainSvgContainer>
 

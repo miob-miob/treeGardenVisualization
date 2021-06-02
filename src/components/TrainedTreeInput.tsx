@@ -30,6 +30,10 @@ export const TrainedTreeInput = () => {
       setError(false);
       setCurrentTree(null);
       const tree = JSON.parse(rawText);
+      // todo also throw error if invalid tree!
+      if (Array.isArray(tree)) {
+        throw new Error('Arrays are not supported yet!');
+      }
       setRawText(JSON.stringify(tree, null, 2));
       setCurrentTree(tree as TreeGardenNode);
     } catch (e) {
