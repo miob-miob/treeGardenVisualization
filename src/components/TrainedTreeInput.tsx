@@ -4,6 +4,7 @@ import { Button } from './shared/Button';
 import { TextAndButtons } from './shared/TextWithButtons';
 import { AppDataContext } from '../state';
 import { TreeGardenNode } from '../../../treeGarden';
+import { getDataForVisualization } from '../utils/tree';
 
 const Container = styled.div`
   //width: 50vw;
@@ -34,6 +35,8 @@ export const TrainedTreeInput = () => {
       if (Array.isArray(tree)) {
         throw new Error('Arrays are not supported yet!');
       }
+      // test if provided json can be visualized and throw error if no
+      getDataForVisualization(tree);
       setRawText(JSON.stringify(tree, null, 2));
       setCurrentTree(tree as TreeGardenNode);
     } catch (e) {

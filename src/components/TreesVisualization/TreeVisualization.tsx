@@ -1,9 +1,11 @@
-import React, { useContext, useState } from 'react';
+/* eslint-disable max-len */
+import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { TreeGardenNode } from 'tree-garden';
 import { AppDataContext } from '../../state';
 import { VisualizationHeader } from './VisualizationHeader';
 import { Tree } from './TreeSvg';
+import { getDataForVisualization } from '../../utils/tree';
 
 const getVisualizationElementSize = (number = 85) => (window.innerWidth > window.innerHeight ? `${number}vh` : `${number}vw`);
 
@@ -47,7 +49,7 @@ const MainSvg = styled.svg<{ zoom:number }>`
   <path d="M520.5 78.1z"/>
   </g>
 </svg>
-*/
+
 const randNumber = (min = 0, max = 100) => Math.random() * (max - min) + min;
 const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max - min) + 1)) + min;
 
@@ -60,12 +62,18 @@ const circles = new Array(1)
     y: randNumber(0, 1000),
     color: randColor()
   }));
-
+{
+  circles.map(({ x, y, color }, index) => <circle key={index} r={10} cx={x} cy={y} fill={color}/>)
+}
+*/
 
 export const TreeVisualization = () => {
   const { currentTree } = useContext(AppDataContext);
+
   const [zoom, setZoom] = useState(1);
   const doWeHaveTree = currentTree !== null;
+  // todo remove 'as' with multiple trees support
+  const visualizationData = useMemo(() => (currentTree ? getDataForVisualization(currentTree as TreeGardenNode) : null), [currentTree]);
   return (
     <MainContainer>
       <VisualizationHeader zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>
@@ -73,10 +81,8 @@ export const TreeVisualization = () => {
       && (
         <MainSvgContainer>
           <MainSvg zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
-            {
-              circles.map(({ x, y, color }, index) => <circle key={index} r={10} cx={x} cy={y} fill={color}/>)
-            }
-            <Tree tree={currentTree as TreeGardenNode} x={0} y={0} width={1000} height={1000}/>
+
+            <Tree visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
           </MainSvg>
         </MainSvgContainer>
 
