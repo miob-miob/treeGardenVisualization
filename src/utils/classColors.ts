@@ -5,7 +5,7 @@ const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max -
 const randColor = () => `#${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}`;
 
 const classColors = [
-  '#dd5500',
+  '#cc3300',
   '#00aa00',
   '#0055ff',
   '#880088',
@@ -14,8 +14,8 @@ const classColors = [
   '#ffee11'
 ];
 
-
-while (classColors.length < 100) {
+// if there are more then 1000 classes in data set we have problem houston ;)
+while (classColors.length < 1000) {
   classColors.push(randColor());
 }
 

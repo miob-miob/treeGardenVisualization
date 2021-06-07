@@ -14,4 +14,4 @@ export const treeGardenTheme = {
     errorBorder: '#aa0000'
   }
 
-};
+} as const;
