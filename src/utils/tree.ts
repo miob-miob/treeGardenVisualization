@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { getMostCommonClassForNode, getTreeStages, TreeGardenNode } from 'tree-garden/dist/treeNode';
 import { getColorForClass } from './classColors';
 
@@ -35,7 +36,7 @@ const getTextsForNode = (node:TreeGardenNode):string[] => (node.isLeaf ? [getMos
   .map((item:string) => item.toString()));
 
 
-const maxFontSize = 12;
+const maxFontSize = 18;
 const maxFontMaxLength = 15;
 
 const minFontSize = 1;
@@ -159,7 +160,7 @@ export const getDataForVisualization = (tree:TreeGardenNode):VisualizationTreeDa
                   x: Math.min(edgeX0, edgeX1) + Math.abs(edgeX1 - edgeX0) / 2,
                   // in case of y we know which is bigger - second
                   y: edgeY0 + (edgeY1 - edgeY0) / 2,
-                  text: 'kunda',
+                  text: Object.entries(parentForNode!.data.childNodes!).find(([, possibleNode]) => possibleNode.id === node.id)![0],
                   ratio: yPartRatio
                 }
               });
