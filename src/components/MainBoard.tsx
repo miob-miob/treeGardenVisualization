@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
+import { TreeGardenNode } from 'tree-garden';
 import { treeGardenTheme } from '../theme';
 import { TrainedTreeInput } from './TrainedTreeInput';
 import { GlobalStyle } from '../globalStyle';
 import { Header } from './Header';
 import { Errors } from './Errors';
-import { AppDataContextProvider } from '../state';
+import { AppDataContextProvider, AppDataContext } from '../state';
 import { DataSampleInput } from './DataSampleInput';
 import { TreeVisualization } from './TreesVisualization/TreeVisualization';
 
@@ -32,7 +33,13 @@ const InputsContainer = styled.div`
 `;
 
 
-export const TreeGardenVisualization = () => (
+const DataAndTree = () => {
+  const { currentTree, currentSample } = useContext(AppDataContext);
+  // arrays are not supported yet
+  return <TreeVisualization tree={currentTree as TreeGardenNode|null} sampleToDisplay={currentSample}/>;
+};
+
+export const Board = () => (
     <ThemeProvider theme={treeGardenTheme as any}>
       <AppDataContextProvider>
         <GlobalStyle/>
@@ -43,9 +50,7 @@ export const TreeGardenVisualization = () => (
             <TrainedTreeInput />
             <DataSampleInput/>
           </InputsContainer>
-
-          <TreeVisualization/>
-
+          <DataAndTree/>
         </MainContainer>
       </AppDataContextProvider>
     </ThemeProvider>

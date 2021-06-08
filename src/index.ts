@@ -1,3 +1,3 @@
 
-export { TreeGardenVisualization } from './components/MainBoard';
+export { Board } from './components/MainBoard';
 

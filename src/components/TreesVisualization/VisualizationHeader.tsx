@@ -56,16 +56,17 @@ const ZoomText = styled.div`
 
 type Props = {
   onZoomChanged:(zoomValue:number)=>void,
-  zoom: number
+  zoom: number,
+  label:string
 
 };
 
-export const VisualizationHeader = ({ onZoomChanged, zoom }:Props) => {
+export const VisualizationHeader = ({ onZoomChanged, zoom, label }:Props) => {
   const { currentTree } = useContext(AppDataContext);
   const isTrainedTreeAvailable = currentTree !== null;
   return (
     <MainContainer>
-      {isTrainedTreeAvailable ? <TreeTitle isTreeAvailable={isTrainedTreeAvailable}>Trained tree visualization</TreeTitle>
+      {isTrainedTreeAvailable ? <TreeTitle isTreeAvailable={isTrainedTreeAvailable}>{label}</TreeTitle>
         : <TreeTitle isTreeAvailable={isTrainedTreeAvailable}>No tree available</TreeTitle>
       }
       {isTrainedTreeAvailable

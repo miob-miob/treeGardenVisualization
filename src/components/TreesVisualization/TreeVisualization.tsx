@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { TreeGardenNode } from 'tree-garden';
-import { AppDataContext } from '../../state';
+import { TreeGardenDataSample } from 'tree-garden/dist/dataSet';
 import { VisualizationHeader } from './VisualizationHeader';
 import { Tree } from './TreeSvg';
 import { getDataForVisualization } from '../../utils/tree';
@@ -66,22 +66,27 @@ const circles = new Array(1)
   circles.map(({ x, y, color }, index) => <circle key={index} r={10} cx={x} cy={y} fill={color}/>)
 }
 */
+type Props = {
+  tree:TreeGardenNode|null,
+  label?:string,
+  sampleToDisplay?:TreeGardenDataSample|null
+};
 
-export const TreeVisualization = () => {
-  const { currentTree } = useContext(AppDataContext);
-
+export const TreeVisualization = (
+  { tree, label = 'Trained tree visualization', sampleToDisplay }:Props
+) => {
+  console.log(sampleToDisplay);
   const [zoom, setZoom] = useState(1);
-  const doWeHaveTree = currentTree !== null;
+  const doWeHaveTree = tree !== null;
   // todo remove 'as' with multiple trees support
-  const visualizationData = useMemo(() => (currentTree ? getDataForVisualization(currentTree as TreeGardenNode) : null), [currentTree]);
+  const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode) : null), [tree]);
   return (
     <MainContainer>
-      <VisualizationHeader zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>
+      <VisualizationHeader label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>
       {doWeHaveTree
       && (
         <MainSvgContainer>
           <MainSvg zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
-
             <Tree visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
           </MainSvg>
         </MainSvgContainer>
