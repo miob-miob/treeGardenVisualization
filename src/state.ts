@@ -8,6 +8,7 @@ let errorCounter = 0;
 const errorShownDuration = 3.5 * 1000; // milliseconds
 const maxErrors = 4;
 const useAppData = () => {
+  const [openedNode, setOpenedNode] = useState(null as TreeGardenNode|null);
   const [currentTree, setCurrentTree] = useState(null as TreeGardenNode|TreeGardenNode[]|null);
   const [currentSample, setCurrentSample] = useState(null as TreeGardenDataSample|null);
   const [errors, setErrors] = useState([] as [number, string][]);
@@ -28,6 +29,8 @@ const useAppData = () => {
     currentSample,
     setCurrentSample,
     errors,
+    openedNode,
+    setOpenedNode,
     addError
   };
 };

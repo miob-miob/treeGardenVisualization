@@ -32,7 +32,7 @@ type VisualizationTreeData = {
   edges: NodeToNodeEdge[]
 };
 
-const getTextsForNode = (node:TreeGardenNode):string[] => (node.isLeaf ? [getMostCommonClassForNode(node)] : node.chosenSplitCriteria
+export const getTextsForNode = (node:TreeGardenNode):string[] => (node.isLeaf ? [getMostCommonClassForNode(node)] : node.chosenSplitCriteria
   .map((item:string) => item.toString()));
 
 

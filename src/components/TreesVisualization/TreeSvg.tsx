@@ -1,6 +1,6 @@
-// todo this is concept of tree item vizualization
 import React from 'react';
 import styled from 'styled-components';
+import { TreeGardenNode } from 'tree-garden';
 import { getDataForVisualization } from '../../utils/tree';
 
 type VisualizationData = ReturnType<typeof getDataForVisualization>;
@@ -12,6 +12,7 @@ type Props = {
   y:number,
   width:number,
   height:number,
+  onClick: (node:TreeGardenNode)=>void
 };
 
 const Edge = styled.line`
@@ -55,6 +56,7 @@ const Node = styled.rect<{ color?:string }>`
 
 export const Tree = ({
   visualizationData,
+  onClick,
   x,
   y,
   width,
@@ -73,7 +75,7 @@ export const Tree = ({
         textBoundary, data, fontSize, texts
       }, index) => <ForeignTextContainer
         key={index}
-        onClick={() => { console.log(data); }}
+        onClick={() => { onClick(data); }}
         x={textBoundary.x0}
         y={textBoundary.y0}
         width={textBoundary.x1 - textBoundary.x0}

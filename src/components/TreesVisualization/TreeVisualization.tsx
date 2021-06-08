@@ -41,39 +41,19 @@ const MainSvg = styled.svg<{ zoom:number }>`
   overflow: auto;
 `;
 
-
-/*
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3">
-  <g fill="#61DAFB">
-  <circle cx="420.9" cy="296.5" r="45.7"/>
-  <path d="M520.5 78.1z"/>
-  </g>
-</svg>
-
-const randNumber = (min = 0, max = 100) => Math.random() * (max - min) + min;
-const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max - min) + 1)) + min;
-
-// eslint-disable-next-line max-len
-const randColor = () => `#${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}${randInt(0, 255).toString(16).padStart(2, '0')}`;
-const circles = new Array(1)
-  .fill(1)
-  .map(() => ({
-    x: randNumber(0, 1000),
-    y: randNumber(0, 1000),
-    color: randColor()
-  }));
-{
-  circles.map(({ x, y, color }, index) => <circle key={index} r={10} cx={x} cy={y} fill={color}/>)
-}
-*/
 type Props = {
   tree:TreeGardenNode|null,
   label?:string,
-  sampleToDisplay?:TreeGardenDataSample|null
+  sampleToDisplay:TreeGardenDataSample|null,
+  onNodeClick?:(node:TreeGardenNode)=>void
 };
 
+const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
+
 export const TreeVisualization = (
-  { tree, label = 'Trained tree visualization', sampleToDisplay }:Props
+  {
+    tree, sampleToDisplay, label = 'Trained tree visualization', onNodeClick = defaultOnNodeClick
+  }:Props
 ) => {
   console.log(sampleToDisplay);
   const [zoom, setZoom] = useState(1);
@@ -87,10 +67,9 @@ export const TreeVisualization = (
       && (
         <MainSvgContainer>
           <MainSvg zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
-            <Tree visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
+            <Tree onClick={onNodeClick} visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
           </MainSvg>
         </MainSvgContainer>
-
       )}
 
     </MainContainer>

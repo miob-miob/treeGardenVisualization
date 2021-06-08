@@ -9,6 +9,7 @@ import { Errors } from './Errors';
 import { AppDataContextProvider, AppDataContext } from '../state';
 import { DataSampleInput } from './DataSampleInput';
 import { TreeVisualization } from './TreesVisualization/TreeVisualization';
+import { OpenedNodePopup } from './OpenedNodePopup';
 
 const MainContainer = styled.div`
   background-color: ${({ theme }) => theme.color1};
@@ -34,16 +35,23 @@ const InputsContainer = styled.div`
 
 
 const DataAndTree = () => {
-  const { currentTree, currentSample } = useContext(AppDataContext);
+  const { currentTree, currentSample, setOpenedNode } = useContext(AppDataContext);
   // arrays are not supported yet
-  return <TreeVisualization tree={currentTree as TreeGardenNode|null} sampleToDisplay={currentSample}/>;
+  return <TreeVisualization
+    tree={currentTree as TreeGardenNode|null}
+    sampleToDisplay={currentSample}
+    onNodeClick={(node) => {
+      setOpenedNode(node);
+    }
+  }/>;
 };
-
+export const rootId = 'treeGardenBoardRoot';
 export const Board = () => (
     <ThemeProvider theme={treeGardenTheme as any}>
       <AppDataContextProvider>
         <GlobalStyle/>
-        <MainContainer>
+        <MainContainer id={rootId}>
+          <OpenedNodePopup/>
           <Errors/>
           <Header/>
           <InputsContainer>
