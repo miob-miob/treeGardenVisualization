@@ -1,5 +1,6 @@
 import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
+import { TreeGardenNode } from 'tree-garden';
 import { NodeDetail } from './NodeDetail';
 import { AppDataContext } from '../state';
 
@@ -29,7 +30,7 @@ const ClickOverlay = styled.div`
 `;
 
 export const OpenedNodePopup = () => {
-  const { setOpenedNode, openedNode } = useContext(AppDataContext);
+  const { setOpenedNode, openedNode, currentTree } = useContext(AppDataContext);
   const overlayRef = useRef(null);
 
 
@@ -40,7 +41,7 @@ export const OpenedNodePopup = () => {
   return (
   <ClickOverlay ref={overlayRef} onClick={() => setOpenedNode(null)}>
     <PopupContainer onClick={(e) => e.stopPropagation()}>
-      <NodeDetail node={openedNode}/>
+      <NodeDetail node={openedNode} wholeTree={currentTree as TreeGardenNode}/>
     </PopupContainer>;
   </ClickOverlay>
   );

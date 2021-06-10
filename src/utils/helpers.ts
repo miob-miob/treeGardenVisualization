@@ -24,3 +24,6 @@ export const getColorForClass = (tree:TreeGardenNode, currentClass:string) => {
   const classColorHash = Object.fromEntries(classes.map((klass, index) => [klass, classColors[index]]));
   return classColorHash[currentClass];
 };
+
+
+export const getSampleCount = (classCounts:TreeGardenNode['classCounts']) => Object.values(classCounts).reduce((acc, current) => acc + current, 0);

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { TreeGardenNode } from 'tree-garden';
 import { getTextsForNode } from '../utils/tree';
 import { getMostCommonClassForNode } from '../../../treeGarden/dist/treeNode';
+import { ClassesHistogram } from './ClassesHistogram';
 
 
 const Container = styled.div`
@@ -60,14 +61,17 @@ const ConsideredSplit = styled.div`
   flex-direction: row;
 `;
 
-const ClassHistogram = styled.div`
+const ClassHistogramContainer = styled.div`
   width: ${100 - dataContainerSize}%;
 `;
 
 type Props = {
-  node :TreeGardenNode
+  node :TreeGardenNode,
+  wholeTree :TreeGardenNode
 };
-export const NodeDetail = ({ node }:Props) => {
+
+// todo count of samples stat
+export const NodeDetail = ({ node, wholeTree }:Props) => {
   console.log('yep');
   return (
     <Container>
@@ -108,7 +112,7 @@ export const NodeDetail = ({ node }:Props) => {
             </DataValue>
           </DataRow>
         </DataContainer>
-        <ClassHistogram>Histogram of classes will be there!!!!</ClassHistogram>
+        <ClassesHistogram classCounts={node.classCounts} wholeTree={wholeTree}/>
 
       </DetailBody>
 
