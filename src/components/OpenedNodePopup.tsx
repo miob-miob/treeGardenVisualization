@@ -33,11 +33,9 @@ export const OpenedNodePopup = () => {
   const { setOpenedNode, openedNode, currentTree } = useContext(AppDataContext);
   const overlayRef = useRef(null);
 
-
   if (openedNode === null) {
     return null;
   }
-
   return (
   <ClickOverlay ref={overlayRef} onClick={() => setOpenedNode(null)}>
     <PopupContainer onClick={(e) => e.stopPropagation()}>

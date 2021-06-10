@@ -17,18 +17,21 @@ const getSortedClassAndRatioPairs = (classCounts:ClassCounts) => Object.keys(cla
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 `;
 
 const HistogramContainer = styled.div`
-  min-height: 20em;
+  height: 50%;
   display: flex;
   flex-direction: row;
+  //border-bottom: 1px solid ${(p) => p.theme.color3};
 `;
 
 const histogramColumnWidth = 1;
 const HistoGramColumn = styled.div`
-  padding-left: 0.5em;
-  padding-right: 0.5em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -37,27 +40,44 @@ const HistoGramColumn = styled.div`
 `;
 
 const HistogramBar = styled.div<{ color:string, heightRatio:number }>`
-  min-height: ${(p) => p.heightRatio * 100}%;
+  min-height: ${(p) => p.heightRatio * 90}%;
   width:${histogramColumnWidth}em;
   background-color: ${(p) => p.color};
 `;
 
 const HistogramCount = styled.div`
-  
+  font-size: small;
 `;
 
 const LegendContainer = styled.div`
-  
+  padding-top: 2em;
+  display: flex;
+  flex-direction: column;
 `;
 
+const LegendRow = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding: 0.05em;
+`;
+
+const LegendBar = styled.div<{ color:string }>`
+  height: 0.5em;
+  width: 2em;
+  background-color: ${(p) => p.color};
+  margin-right: 0.2em;
+`;
+
+const LegendText = styled.div`
+  font-size: small;
+`;
 
 type Props = {
   classCounts: ClassCounts,
   wholeTree:TreeGardenNode // in order to extract all known classes
 };
-export const ClassesHistogram = ({ classCounts, wholeTree }:Props) => {
-  const a = 'v';
-  return (
+export const ClassesHistogram = ({ classCounts, wholeTree }:Props) => (
     <MainContainer>
       <HistogramContainer>
         {
@@ -71,9 +91,13 @@ export const ClassesHistogram = ({ classCounts, wholeTree }:Props) => {
         }
       </HistogramContainer>
       <LegendContainer>
-        There will be legend my firend
+        {Object.keys(classCounts).sort().map((currentClass) => (
+          <LegendRow key={currentClass}>
+            <LegendBar color={getColorForClass(wholeTree, currentClass)}/>
+            <LegendText>{currentClass}</LegendText>
+          </LegendRow>
+        ))}
       </LegendContainer>
     </MainContainer>
 
-  );
-};
+);

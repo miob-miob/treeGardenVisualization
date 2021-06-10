@@ -4,6 +4,7 @@ import { TreeGardenNode } from 'tree-garden';
 import { getTextsForNode } from '../utils/tree';
 import { getMostCommonClassForNode } from '../../../treeGarden/dist/treeNode';
 import { ClassesHistogram } from './ClassesHistogram';
+import { getSampleCount } from '../utils/helpers';
 
 
 const Container = styled.div`
@@ -48,7 +49,8 @@ const DataLabel = styled.div`
 
 const DataValue = styled.div`
   min-width: ${100 - labelSize}%;
-  
+  display: flex;
+  align-items: center;
 `;
 
 const ConsideredSplitsContainer = styled.div`
@@ -71,9 +73,7 @@ type Props = {
 };
 
 // todo count of samples stat
-export const NodeDetail = ({ node, wholeTree }:Props) => {
-  console.log('yep');
-  return (
+export const NodeDetail = ({ node, wholeTree }:Props) => (
     <Container>
       <Head>Node detail</Head>
       <DetailBody>
@@ -89,6 +89,10 @@ export const NodeDetail = ({ node, wholeTree }:Props) => {
           <DataRow>
             <DataLabel>Most common class:</DataLabel>
             <DataValue>{getMostCommonClassForNode(node)}</DataValue>
+          </DataRow>
+          <DataRow>
+            <DataLabel>Number of samples:</DataLabel>
+            <DataValue>{getSampleCount(node.classCounts)}</DataValue>
           </DataRow>
           <DataRow>
             <DataLabel>Node depth:</DataLabel>
@@ -107,15 +111,15 @@ export const NodeDetail = ({ node, wholeTree }:Props) => {
             <DataValue>
               <ConsideredSplitsContainer>
                 {/* eslint-disable-next-line max-len */}
-                {node.bestSplits.map(({ split, score }) => <ConsideredSplit><TextFragment>{score.toFixed(4)}</TextFragment><TextFragment>{split}</TextFragment></ConsideredSplit>)}
+                {node.bestSplits.map(({ split, score }) => <ConsideredSplit><TextFragment>{split}</TextFragment><TextFragment>{score.toFixed(4)}</TextFragment></ConsideredSplit>)}
               </ConsideredSplitsContainer>
             </DataValue>
           </DataRow>
         </DataContainer>
-        <ClassesHistogram classCounts={node.classCounts} wholeTree={wholeTree}/>
-
+        <ClassHistogramContainer>
+          <ClassesHistogram classCounts={node.classCounts} wholeTree={wholeTree}/>
+        </ClassHistogramContainer>
       </DetailBody>
 
     </Container>
-  );
-};
+);
