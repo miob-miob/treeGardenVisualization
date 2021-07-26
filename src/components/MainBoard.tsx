@@ -45,12 +45,12 @@ const DataAndTree = () => {
     }
   }/>;
 };
-export const rootId = 'treeGardenBoardRoot';
+
 export const Board = () => (
     <ThemeProvider theme={treeGardenTheme as any}>
       <AppDataContextProvider>
         <GlobalStyle/>
-        <MainContainer id={rootId}>
+        <MainContainer>
           <OpenedNodePopup/>
           <Errors/>
           <Header/>
