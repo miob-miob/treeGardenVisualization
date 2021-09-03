@@ -55,11 +55,10 @@ export const TreeVisualization = (
     tree, sampleToDisplay, label = 'Trained tree visualization', onNodeClick = defaultOnNodeClick
   }:Props
 ) => {
-  console.log(sampleToDisplay);
   const [zoom, setZoom] = useState(1);
   const doWeHaveTree = tree !== null;
   // todo remove 'as' with multiple trees support
-  const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode) : null), [tree]);
+  const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
   return (
     <MainContainer>
       <VisualizationHeader label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>

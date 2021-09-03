@@ -11,7 +11,8 @@ export const treeGardenTheme = {
     borderWidth: '2px'
   },
   otherColors: {
-    errorBorder: '#aa0000'
+    errorBorder: '#aa0000',
+    highlighted: '#efef00'
   }
 
 } as const;

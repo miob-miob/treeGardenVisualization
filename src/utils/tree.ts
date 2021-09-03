@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { getMostCommonClassForNode, getTreeStages, TreeGardenNode } from 'tree-garden/dist/treeNode';
-import { getColorForClass } from './helpers';
+import { getColorForClass, getNodeIdsOfProjectedSample } from './helpers';
+import { TreeGardenDataSample } from '../../../treeGarden/dist/dataSet';
 
 type TreeStages = ReturnType<typeof getTreeStages>;
 
@@ -25,6 +26,7 @@ type NodeToNodeEdge = TwoPoints & {
     ratio:number,
     text:string
   }
+  highlighted:boolean
 };
 
 type VisualizationTreeData = {
@@ -74,8 +76,10 @@ const nodeWidth = 5;
 const textOffsetX = 0.03;
 const textOffsetY = 0.03;
 
-export const getDataForVisualization = (tree:TreeGardenNode):VisualizationTreeData => {
+export const getDataForVisualization = (tree:TreeGardenNode, projectedSample?:TreeGardenDataSample|null):VisualizationTreeData => {
   try {
+    // nodes are highlighted if sample hits it during way down to leaf
+    const highlightedNodeIds = projectedSample ? getNodeIdsOfProjectedSample(tree, projectedSample) : [];
     const stages = getTreeStages(tree);
 
     const numberOfStages = getNumberOfStages(stages);
@@ -128,7 +132,7 @@ export const getDataForVisualization = (tree:TreeGardenNode):VisualizationTreeDa
             // push nodes
             const nodeVisualData = {
               color: node.isLeaf ? getColorForClass(tree, getMostCommonClassForNode(node)) : undefined,
-              highlighted: false,
+              highlighted: highlightedNodeIds.includes(node.id),
               x0: currentX,
               x1: currentX + nodeWidthAbsolute,
               y0: currentY,
@@ -162,7 +166,8 @@ export const getDataForVisualization = (tree:TreeGardenNode):VisualizationTreeDa
                   y: edgeY0 + (edgeY1 - edgeY0) / 2,
                   text: Object.entries(parentForNode!.data.childNodes!).find(([, possibleNode]) => possibleNode.id === node.id)![0],
                   ratio: yPartRatio
-                }
+                },
+                highlighted: Boolean(parentForNode && highlightedNodeIds.includes(parentForNode.data.id) && highlightedNodeIds.includes(node.id))
               });
             }
             // increment x node width

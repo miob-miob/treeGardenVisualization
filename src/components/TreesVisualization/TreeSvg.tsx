@@ -15,9 +15,9 @@ type Props = {
   onClick: (node:TreeGardenNode)=>void
 };
 
-const Edge = styled.line`
-  stroke-width: 2px;
-  stroke: ${({ theme }) => theme.color2}
+const Edge = styled.line<{ highlighted:boolean }>`
+  stroke-width: ${({ highlighted }) => (highlighted ? '4px' : '2px')};
+  stroke: ${({ theme, highlighted }) => (highlighted ? theme.otherColors.highlighted : theme.color2)}
 `;
 
 const EdgeLabel = styled.text<{ fontSizeRatio:number }>`
@@ -64,8 +64,8 @@ export const Tree = ({
 }:Props) => (
     <svg viewBox="0 0 1000 1000" x={x} y={y} width={width} height={height}>
       {visualizationData.edges.map(({
-        x0, x1, y0, y1
-      }, index) => <Edge key={index} x1={x0} x2={x1} y1={y0} y2={y1}/>)}
+        x0, x1, y0, y1, highlighted
+      }, index) => <Edge key={index} x1={x0} x2={x1} y1={y0} y2={y1} highlighted={highlighted}/>)}
       {
         visualizationData.treeNodes.map(({
           x0, x1, y0, y1, color, data
