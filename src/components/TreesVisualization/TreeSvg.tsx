@@ -44,8 +44,8 @@ const Text = styled.div<{ fontSize:number }>`
   font-size: ${(p) => p.fontSize}px;
 `;
 
-
-const Node = styled.rect<{ color?:string }>`
+// todo somehow visualize highlighted?
+const Node = styled.rect<{ color?:string, highlighted:boolean }>`
   fill: ${({ theme }) => theme.color2};
   stroke: ${({ theme, color }) => (color || theme.color3)};
   rx:${({ theme }) => theme.sizes.borderRadius};
@@ -68,8 +68,8 @@ export const Tree = ({
       }, index) => <Edge key={index} x1={x0} x2={x1} y1={y0} y2={y1} highlighted={highlighted}/>)}
       {
         visualizationData.treeNodes.map(({
-          x0, x1, y0, y1, color, data
-        }) => <Node key={data.id} x={x0} y={y0} width={x1 - x0} height={y1 - y0} color={color}/>)
+          x0, x1, y0, y1, color, data, highlighted
+        }) => <Node key={data.id} x={x0} y={y0} width={x1 - x0} height={y1 - y0} color={color} highlighted={highlighted}/>)
       }
       {visualizationData.treeNodes.map(({
         textBoundary, data, fontSize, texts
