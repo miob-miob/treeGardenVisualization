@@ -1,7 +1,7 @@
 import { AlgorithmConfiguration, TreeGardenNode } from 'tree-garden';
 import { getLeafNodeOfSample } from 'tree-garden/dist/classifyData';
 import { getMostCommonTagOfSamplesInNode } from 'tree-garden/dist/dataSet/replaceMissingValues';
-import { TreeGardenDataSample } from 'tree-garden/dist/dataSet';
+import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
 
 const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max - min) + 1)) + min;
 // eslint-disable-next-line max-len

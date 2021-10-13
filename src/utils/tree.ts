@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { getMostCommonClassForNode, getTreeStages, TreeGardenNode } from 'tree-garden/dist/treeNode';
 import { getColorForClass, getNodeIdsOfProjectedSample } from './helpers';
-import { TreeGardenDataSample } from '../../../treeGarden/dist/dataSet';
+import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
 
 type TreeStages = ReturnType<typeof getTreeStages>;
 
