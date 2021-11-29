@@ -1,7 +1,12 @@
 /* eslint-disable max-len */
-import { getMostCommonClassForNode, getTreeStages, TreeGardenNode } from 'tree-garden/dist/treeNode';
-import { getColorForClass, getNodeIdsOfProjectedSample } from './helpers';
+import {
+  getMostCommonClassForNode,
+  getTreeStages,
+  SINGLE_CLASS_FOR_REGRESSION_TREE,
+  TreeGardenNode
+} from 'tree-garden/dist/treeNode';
 import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
+import { getColorForClass, getNodeIdsOfProjectedSample } from './helpers';
 
 type TreeStages = ReturnType<typeof getTreeStages>;
 
@@ -34,8 +39,21 @@ type VisualizationTreeData = {
   edges: NodeToNodeEdge[]
 };
 
-export const getTextsForNode = (node:TreeGardenNode):string[] => (node.isLeaf ? [getMostCommonClassForNode(node)] : node.chosenSplitCriteria
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const getTextsForNodee = (node:TreeGardenNode):string[] => (node.isLeaf ? [getMostCommonClassForNode(node)] : node.chosenSplitCriteria
   .map((item:string) => item.toString()));
+
+export const getTextsForNode = (node:TreeGardenNode) => {
+  let result;
+  if (node.isLeaf) {
+    const text = getMostCommonClassForNode(node);
+    // ugly hack how to get information if tree is regression tree or not (we do not want user have to provide configuration)
+    result = [(text === SINGLE_CLASS_FOR_REGRESSION_TREE ? node.regressionTreeAverageOutcome?.toPrecision(5)! : text)];
+  } else {
+    result = node.chosenSplitCriteria;
+  }
+  return result.map((item) => item.toString());
+};
 
 
 const maxFontSize = 18;
@@ -70,8 +88,8 @@ const getMaximalNumberOfGaps = (treeStages:TreeStages) => Math.max(...treeStages
 const gapBetweenNodes = 0.75;
 const gapBetweenGroups = 1.5;
 const edge = 2;
-const nodeHeight = 2;
-const nodeWidth = 5;
+const nodeHeight = 1;
+const nodeWidth = 8;
 
 const textOffsetX = 0.03;
 const textOffsetY = 0.03;
