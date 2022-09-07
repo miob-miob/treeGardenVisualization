@@ -1,4 +1,4 @@
-### Visualization of [TreeGarden](miob-miob/treeGardenVisualization)
+### Visualization of [TreeGarden](https://github.com/miob-miob/treeGarden)
 
 WIP 
 
