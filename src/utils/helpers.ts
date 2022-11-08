@@ -1,7 +1,11 @@
-import { AlgorithmConfiguration, TreeGardenNode } from 'tree-garden';
-import { getLeafNodeOfSample } from 'tree-garden/dist/classifyData';
-import { getMostCommonTagOfSamplesInNode } from 'tree-garden/dist/dataSet/replaceMissingValues';
-import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
+import {
+  TreeGardenConfiguration,
+  TreeGardenDataSample,
+  TreeGardenNode,
+  dataSet,
+  predict
+} from 'tree-garden';
+
 
 const randInt = (min: number, max: number) => Math.floor(Math.random() * ((max - min) + 1)) + min;
 // eslint-disable-next-line max-len
@@ -44,11 +48,12 @@ const algorithmConfigTraps = {
   }
 };
 
+// todo think if this should be moved into tree-garden? - not really
 const algorithmConfigProxy = new Proxy({
-  getTagOfSampleWithMissingValueWhileClassifying: getMostCommonTagOfSamplesInNode
+  getTagOfSampleWithMissingValueWhileClassifying: dataSet.getMostCommonTagOfSamplesInNode
 }, algorithmConfigTraps);
 
 export const getNodeIdsOfProjectedSample = (
   tree: TreeGardenNode,
   sample:TreeGardenDataSample
-) => getLeafNodeOfSample(sample, tree, algorithmConfigProxy as AlgorithmConfiguration, true);
+) => predict.getLeafNodeOfSample(sample, tree, algorithmConfigProxy as TreeGardenConfiguration, true);

@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { TreeGardenNode } from 'tree-garden';
-import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
+import { TreeGardenNode, TreeGardenDataSample } from 'tree-garden';
 import { VisualizationHeader } from './VisualizationHeader';
 import { Tree } from './TreeSvg';
 import { getDataForVisualization } from '../../utils/tree';

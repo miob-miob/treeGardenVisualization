@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { TreeGardenNode } from 'tree-garden';
-import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
+import { TreeGardenNode, TreeGardenDataSample } from 'tree-garden';
 
 import { genericHookContextBuilder } from './utils/genericContextProviderBuilder';
 

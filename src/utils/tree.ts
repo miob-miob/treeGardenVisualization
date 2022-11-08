@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
 import {
-  getMostCommonClassForNode,
-  getTreeStages,
-  SINGLE_CLASS_FOR_REGRESSION_TREE,
-  TreeGardenNode
-} from 'tree-garden/dist/treeNode';
-import { TreeGardenDataSample } from 'tree-garden/dist/dataSet/set';
+  TreeGardenDataSample,
+  TreeGardenNode,
+  tree as tgTree,
+  constants,
+  predict
+} from 'tree-garden';
+
 import { getColorForClass, getNodeIdsOfProjectedSample } from './helpers';
 
-type TreeStages = ReturnType<typeof getTreeStages>;
+type TreeStages = ReturnType<typeof tgTree.getTreeStages>;
 
 type TwoPoints = {
   x0:number,
@@ -40,15 +41,15 @@ type VisualizationTreeData = {
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const getTextsForNodee = (node:TreeGardenNode):string[] => (node.isLeaf ? [getMostCommonClassForNode(node)] : node.chosenSplitCriteria
+export const getTextsForNodee = (node:TreeGardenNode):string[] => (node.isLeaf ? [predict.getMostCommonClassForNode(node)] : node.chosenSplitCriteria
   .map((item:string) => item.toString()));
 
 export const getTextsForNode = (node:TreeGardenNode) => {
   let result;
   if (node.isLeaf) {
-    const text = getMostCommonClassForNode(node);
+    const text = predict.getMostCommonClassForNode(node);
     // ugly hack how to get information if tree is regression tree or not (we do not want user have to provide configuration)
-    result = [(text === SINGLE_CLASS_FOR_REGRESSION_TREE ? node.regressionTreeAverageOutcome?.toPrecision(5)! : text)];
+    result = [(text === constants.SINGLE_CLASS_FOR_REGRESSION_TREE ? node.regressionTreeAverageOutcome?.toPrecision(5)! : text)];
   } else {
     result = node.chosenSplitCriteria;
   }
@@ -98,7 +99,7 @@ export const getDataForVisualization = (tree:TreeGardenNode, projectedSample?:Tr
   try {
     // nodes are highlighted if sample hits it during way down to leaf
     const highlightedNodeIds = projectedSample ? getNodeIdsOfProjectedSample(tree, projectedSample) : [];
-    const stages = getTreeStages(tree);
+    const stages = tgTree.getTreeStages(tree);
 
     const numberOfStages = getNumberOfStages(stages);
     const maxNumberOfNodesInStage = getMaximalNumberOfNodesOnStage(stages);
@@ -149,7 +150,7 @@ export const getDataForVisualization = (tree:TreeGardenNode, projectedSample?:Tr
           groupOrGap.forEach((node, nodeIndex) => {
             // push nodes
             const nodeVisualData = {
-              color: node.isLeaf ? getColorForClass(tree, getMostCommonClassForNode(node)) : undefined,
+              color: node.isLeaf ? getColorForClass(tree, predict.getMostCommonClassForNode(node)) : undefined,
               highlighted: highlightedNodeIds.includes(node.id),
               x0: currentX,
               x1: currentX + nodeWidthAbsolute,

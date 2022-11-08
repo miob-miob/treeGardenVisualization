@@ -33,7 +33,7 @@ export default (env:Record<string, string>)=>{
 
 
   const devServerSetting ={
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 9001,
   }

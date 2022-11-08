@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TreeGardenNode } from 'tree-garden';
+import { TreeGardenNode, predict } from 'tree-garden';
 import { getTextsForNode } from '../utils/tree';
-import { getMostCommonClassForNode } from '../../../treeGarden/dist/treeNode';
 import { ClassesHistogram } from './ClassesHistogram';
 import { getSampleCount } from '../utils/helpers';
 
@@ -88,7 +87,7 @@ export const NodeDetail = ({ node, wholeTree }:Props) => (
           </DataRow>
           <DataRow>
             <DataLabel>Most common class:</DataLabel>
-            <DataValue>{getMostCommonClassForNode(node)}</DataValue>
+            <DataValue>{predict.getMostCommonClassForNode(node)}</DataValue>
           </DataRow>
           <DataRow>
             <DataLabel>Number of samples:</DataLabel>
