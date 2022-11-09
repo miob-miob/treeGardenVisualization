@@ -1,2 +1,2 @@
-export { UfoComponent } from '../src/components/Ufo';
+export { UfoComponent } from './components/Ufo';
 
