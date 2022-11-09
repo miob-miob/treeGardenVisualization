@@ -1,7 +1,5 @@
 import path from 'path';
 import webpack from 'webpack'
-import HtmlWebpackPlugin from "html-webpack-plugin"
-import {Configuration  as DevServerConfig} from 'webpack-dev-server'
 
 
 export default (env:Record<string, string>)=>{
@@ -32,31 +30,25 @@ export default (env:Record<string, string>)=>{
 
 
 
-  const devServerSetting ={
-    static: path.join(__dirname, 'dist'),
-    compress: true,
-    port: 9001,
-  }
-  console.log('build mode:',buildMode)
+  console.log(`Build mode:  ${buildMode}`)
 
-  const webpackConfig: webpack.Configuration & {devServer:DevServerConfig} = {
+  const webpackConfig: webpack.Configuration = {
     mode: buildMode,
-
-    devServer: devServerSetting,
-    devtool: (!isProduction)?'inline-source-map':false,
-    entry: {
-      shared: ['react', 'react-dom','styled-components'],
-      index: {
-        import: './src/index.ts',
-        dependOn: 'shared',
-      },
-      playground: {
-        import: './src/playground.ts',
-        dependOn: ['shared','index'],
-      },
+    devtool: isProduction?'source-map':'eval-source-map',
+    entry: './src/index.ts',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename:'index.js',
+      library:{
+        name:'tree-garden-visualization',
+        type:'umd'
+      }
     },
-    plugins:[
-      new HtmlWebpackPlugin({title:'Miob`s Tree Garden Playground'})
+    externals:[
+      "react",
+      "react-dom",
+      "styled-components",
+      "tree-garden"
     ],
     module: {
       rules: [
@@ -72,11 +64,6 @@ export default (env:Record<string, string>)=>{
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
-    },
-    output: {
-      filename: '[name]_[contenthash].js',
-      path: path.resolve(__dirname, 'dist'),
-      clean: true
     },
   };
 

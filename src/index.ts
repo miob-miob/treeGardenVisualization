@@ -1,3 +1,2 @@
-
-export { Board } from './components/MainBoard';
+export { UfoComponent } from '../src/components/Ufo';
 
