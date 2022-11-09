@@ -38,7 +38,7 @@ const DataAndTree = () => {
   const { currentTree, currentSample, setOpenedNode } = useContext(AppDataContext);
   // arrays are not supported yet
   return <TreeVisualization
-    tree={currentTree as TreeGardenNode|null}
+    tree={currentTree as TreeGardenNode | null}
     sampleToDisplay={currentSample}
     onNodeClick={(node) => {
       setOpenedNode(node);

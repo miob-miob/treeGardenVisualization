@@ -34,7 +34,7 @@ export default (env:Record<string, string>)=>{
 
   const webpackConfig: webpack.Configuration = {
     mode: buildMode,
-    devtool: isProduction?'source-map':'eval-source-map',
+    devtool: 'source-map',
     entry: './src/index.ts',
     output: {
       path: path.resolve(__dirname, 'dist'),
