@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
+import { TreeGardenNode } from 'tree-garden';
 import { Button } from './shared/Button';
 import { TextAndButtons } from './shared/TextWithButtons';
 import { AppDataContext } from '../state';
-import { TreeGardenNode } from '../../../treeGarden';
 import { getDataForVisualization } from '../utils/tree';
 
 const Container = styled.div`
