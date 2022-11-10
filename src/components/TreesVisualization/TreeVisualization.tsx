@@ -46,7 +46,7 @@ type Props = {
   sampleToDisplay?:TreeGardenDataSample | null,
   onNodeClick?:(node:TreeGardenNode)=>void,
   showHeader?:boolean,
-  initialZoom?:number
+  initialZoom?:number,
   size?:number // in wv (width and height of tree component
 };
 
