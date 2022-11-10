@@ -15,13 +15,12 @@ const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   //background-color: ${({ theme }) => theme.color2};
-  width: 100vw;
 `;
-const MainSvgContainer = styled.div`
+const MainSvgContainer = styled.div<{ size:number }>`
   display: flex;
   flex-direction: row;
-  width: ${getVisualizationElementSize()};
-  height: ${getVisualizationElementSize()};
+  width: ${({ size }) => getVisualizationElementSize(size)};
+  height: ${({ size }) => getVisualizationElementSize(size)};
   border: 1px solid ${({ theme }) => theme.color2};
   border-radius: ${({ theme }) => theme.sizes.borderRadius};
   //height: 500px;
@@ -29,15 +28,15 @@ const MainSvgContainer = styled.div`
   
 `;
 
-const MainSvg = styled.svg<{ zoom:number }>`
+// transform: scale(${({ zoom }) => zoom}) translate(${({ zoom }) => zoom * 10}%, ${({ zoom }) => zoom * 10}%);
+const MainSvg = styled.svg<{ zoom:number, size:number }>`
   transform-origin: left top;
   margin:auto;
   // todo investigate possibility of usage dynamic transform-origin according to mouse
-  // todo use width, height + make it proportionally shifted with translate + also set scrollbars 
-  //transform: scale(${({ zoom }) => zoom}) translate(${({ zoom }) => zoom * 10}%, ${({ zoom }) => zoom * 10}%);
+  // todo use width, height + make it proportionally shifted with translate + also set scrollbars
   transform: scale(${({ zoom }) => zoom});
-  width: ${getVisualizationElementSize()};
-  height: ${getVisualizationElementSize()}
+  width: ${({ size }) => getVisualizationElementSize(size)};
+  height: ${({ size }) => getVisualizationElementSize(size)};
   overflow: auto;
 `;
 
@@ -48,6 +47,7 @@ type Props = {
   onNodeClick?:(node:TreeGardenNode)=>void,
   showHeader?:boolean,
   initialZoom?:number
+  size?:number // in wv (width and height of tree component
 };
 
 const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
@@ -59,7 +59,8 @@ export const TreeVisualization = (
     label = 'Trained tree visualization',
     onNodeClick = defaultOnNodeClick,
     showHeader = true,
-    initialZoom = 1
+    initialZoom = 1,
+    size = 85
   }:Props
 ) => {
   const [zoom, setZoom] = useState(initialZoom);
@@ -73,8 +74,8 @@ export const TreeVisualization = (
         {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>}
         {doWeHaveTree
         && (
-          <MainSvgContainer>
-            <MainSvg zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
+          <MainSvgContainer size={size}>
+            <MainSvg size={size} zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
               <Tree onClick={onNodeClick} visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
             </MainSvg>
           </MainSvgContainer>
