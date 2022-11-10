@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { AppDataContext } from '../../state';
+import { TreeGardenNode } from 'tree-garden';
 
 
 const MainContainer = styled.div`
@@ -57,13 +57,15 @@ const ZoomText = styled.div`
 type Props = {
   onZoomChanged:(zoomValue:number)=>void,
   zoom: number,
-  label:string
+  label:string,
+  tree:TreeGardenNode | null
 
 };
 
-export const VisualizationHeader = ({ onZoomChanged, zoom, label }:Props) => {
-  const { currentTree } = useContext(AppDataContext);
-  const isTrainedTreeAvailable = currentTree !== null;
+export const VisualizationHeader = ({
+  onZoomChanged, zoom, label, tree
+}:Props) => {
+  const isTrainedTreeAvailable = tree !== null;
   return (
     <MainContainer>
       {isTrainedTreeAvailable ? <TreeTitle isTreeAvailable={isTrainedTreeAvailable}>{label}</TreeTitle>
