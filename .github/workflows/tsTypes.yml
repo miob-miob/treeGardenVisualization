@@ -1,0 +1,55 @@
+name: 'Types and tests'
+# todo lot of duplicity - fix
+
+on:
+  push:
+    branches:
+      - 'master'
+
+
+
+jobs:
+
+  install_deps:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16-buster-slim
+
+    steps:
+      - name: 'Checkout code - as we need package.json + lock'
+        uses: actions/checkout@v3
+
+      - name: 'Cache based on package.lock.json '
+        id:  'node_modules_cache'
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: node_modules_cache_${{ hashFiles('package-lock.json') }}
+
+      -  if: ${{ steps.node_modules_cache.outputs.cache-hit != 'true' }}
+         name: 'Install node dependencies if no cache hit'
+         run: npm ci
+
+
+  check_types:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16-buster-slim
+    needs: [install_deps]
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v3
+
+      - name: 'Cache based on package.lock.json '
+        id: 'node_modules_cache'
+        uses: actions/cache@v3
+        with:
+          path: ./node_modules
+          key: node_modules_cache_${{ hashFiles('package-lock.json') }}
+
+
+      - name: 'check types'
+        run: npm run typeCheck
+
+

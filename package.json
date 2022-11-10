@@ -1,6 +1,6 @@
 {
   "name": "tree-garden-visualization",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "React components for treeGarden visualization",
   "files": [
     "/dist"
