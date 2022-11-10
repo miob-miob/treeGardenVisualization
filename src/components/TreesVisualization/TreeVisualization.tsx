@@ -7,7 +7,12 @@ import { Tree } from './TreeSvg';
 import { getDataForVisualization } from '../../utils/tree';
 import { treeGardenTheme } from '../../theme';
 
-const getVisualizationElementSize = (number = 85) => (window.innerWidth > window.innerHeight ? `${number}vh` : `${number}vw`);
+const getVisualizationElementSize = (number:number, sizeUnit:string | null) => {
+  if (sizeUnit === null) {
+    return (window.innerWidth > window.innerHeight ? `${number}vh` : `${number}vw`);
+  }
+  return `${number}${sizeUnit}`;
+};
 
 const MainContainer = styled.div`
   display: flex;
@@ -16,11 +21,11 @@ const MainContainer = styled.div`
   align-items: center;
   //background-color: ${({ theme }) => theme.color2};
 `;
-const MainSvgContainer = styled.div<{ size:number }>`
+const MainSvgContainer = styled.div<{ size:string }>`
   display: flex;
   flex-direction: row;
-  width: ${({ size }) => getVisualizationElementSize(size)};
-  height: ${({ size }) => getVisualizationElementSize(size)};
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
   border: 1px solid ${({ theme }) => theme.color2};
   border-radius: ${({ theme }) => theme.sizes.borderRadius};
   //height: 500px;
@@ -29,14 +34,14 @@ const MainSvgContainer = styled.div<{ size:number }>`
 `;
 
 // transform: scale(${({ zoom }) => zoom}) translate(${({ zoom }) => zoom * 10}%, ${({ zoom }) => zoom * 10}%);
-const MainSvg = styled.svg<{ zoom:number, size:number }>`
+const MainSvg = styled.svg<{ zoom:number, size:string }>`
   transform-origin: left top;
   margin:auto;
   // todo investigate possibility of usage dynamic transform-origin according to mouse
   // todo use width, height + make it proportionally shifted with translate + also set scrollbars
   transform: scale(${({ zoom }) => zoom});
-  width: ${({ size }) => getVisualizationElementSize(size)};
-  height: ${({ size }) => getVisualizationElementSize(size)};
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
   overflow: auto;
 `;
 
@@ -48,6 +53,7 @@ type Props = {
   showHeader?:boolean,
   initialZoom?:number,
   size?:number // in wv (width and height of tree component
+  sizeUnit?:string | null // if no unit provided -  relative to window is used
 };
 
 const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
@@ -60,13 +66,15 @@ export const TreeVisualization = (
     onNodeClick = defaultOnNodeClick,
     showHeader = true,
     initialZoom = 1,
-    size = 85
+    size = 85,
+    sizeUnit = null
   }:Props
 ) => {
   const [zoom, setZoom] = useState(initialZoom);
   const doWeHaveTree = tree !== null;
   // todo remove 'as' with multiple trees support
   const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
+  const sizeAndUnit = getVisualizationElementSize(size, sizeUnit);
   return (
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
@@ -74,8 +82,8 @@ export const TreeVisualization = (
         {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>}
         {doWeHaveTree
         && (
-          <MainSvgContainer size={size}>
-            <MainSvg size={size} zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
+          <MainSvgContainer size={sizeAndUnit}>
+            <MainSvg size={sizeAndUnit} zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
               <Tree onClick={onNodeClick} visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
             </MainSvg>
           </MainSvgContainer>
