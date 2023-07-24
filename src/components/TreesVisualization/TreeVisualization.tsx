@@ -93,8 +93,6 @@ export const TreeVisualization = (
     const newScaledWidth = ref.current.clientWidth * zoom;
     const newScaledHeight = ref.current.clientHeight * zoom;
 
-    const currentViewXPercent = ref.current.clientWidth / newScaledWidth;
-    const currentViewYPercent = ref.current.clientHeight / newScaledHeight;
 
     const xPxZoomCoefficient = (1 - (prevScaledWidth / newScaledWidth));
     const yPxZoomCoefficient = (1 - (prevScaledHeight / newScaledHeight));
@@ -103,7 +101,10 @@ export const TreeVisualization = (
     ref.current.scrollTop += ref.current.scrollTop * yPxZoomCoefficient;
 
     // -----------------------------------
-    // change of zoom per px...
+    // change of zoom per px for center of current view...
+
+    const currentViewXPercent = ref.current.clientWidth / newScaledWidth;
+    const currentViewYPercent = ref.current.clientHeight / newScaledHeight;
 
     ref.current.scrollLeft += (((newScaledWidth * currentViewXPercent) / 2) * xPxZoomCoefficient)
     ref.current.scrollTop += (((newScaledHeight * currentViewYPercent) / 2) * yPxZoomCoefficient)
