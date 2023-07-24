@@ -75,7 +75,7 @@ export const VisualizationHeader = ({
       && (
         <LabelAndZoomContainer>
           <ZoomText>Zoom:</ZoomText>
-          <Zoom value={zoom} min={1} max={10} step={0.1} onInput={((event:React.FormEvent<HTMLInputElement>) => {
+          <Zoom value={zoom} min={1} max={10} step={0.05} onInput={((event:React.FormEvent<HTMLInputElement>) => {
             onZoomChanged(parseFloat(event.currentTarget.value));
           })}/>
         </LabelAndZoomContainer>)}

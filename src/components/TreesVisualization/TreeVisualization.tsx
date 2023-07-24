@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
-import React, { useMemo, useState } from 'react';
+import React, {
+  useRef, useEffect, useMemo, useState
+} from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { TreeGardenNode, TreeGardenDataSample } from 'tree-garden';
 import { VisualizationHeader } from './VisualizationHeader';
@@ -75,6 +77,38 @@ export const TreeVisualization = (
   // todo remove 'as' with multiple trees support
   const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
   const sizeAndUnit = getVisualizationElementSize(size, sizeUnit);
+
+  const ref = useRef<any>(null);
+  const [prevZoom, setPrevZoom] = useState(zoom);
+
+  useEffect(() => {
+    if (!ref || !ref.current) return;
+
+    setPrevZoom(zoom);
+
+    // make scrolling fixed to left top corner
+    const prevScaledWidth = ref.current.clientWidth * prevZoom;
+    const prevScaledHeight = ref.current.clientHeight * prevZoom;
+
+    const newScaledWidth = ref.current.clientWidth * zoom;
+    const newScaledHeight = ref.current.clientHeight * zoom;
+
+    const currentViewXPercent = ref.current.clientWidth / newScaledWidth;
+    const currentViewYPercent = ref.current.clientHeight / newScaledHeight;
+
+    const xPxZoomCoefficient = (1 - (prevScaledWidth / newScaledWidth));
+    const yPxZoomCoefficient = (1 - (prevScaledHeight / newScaledHeight));
+
+    ref.current.scrollLeft += ref.current.scrollLeft * xPxZoomCoefficient;
+    ref.current.scrollTop += ref.current.scrollTop * yPxZoomCoefficient;
+
+    // -----------------------------------
+    // change of zoom per px...
+
+    ref.current.scrollLeft += (((newScaledWidth * currentViewXPercent) / 2) * xPxZoomCoefficient)
+    ref.current.scrollTop += (((newScaledHeight * currentViewYPercent) / 2) * yPxZoomCoefficient)
+  }, [zoom]);
+
   return (
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
@@ -82,7 +116,7 @@ export const TreeVisualization = (
         {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>}
         {doWeHaveTree
         && (
-          <MainSvgContainer size={sizeAndUnit}>
+          <MainSvgContainer size={sizeAndUnit} ref={ref}>
             <MainSvg size={sizeAndUnit} zoom={zoom} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" >
               <Tree onClick={onNodeClick} visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
             </MainSvg>
