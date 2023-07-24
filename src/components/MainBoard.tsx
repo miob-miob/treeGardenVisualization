@@ -34,6 +34,13 @@ const InputsContainer = styled.div`
 `;
 
 
+// todo
+
+// type BoardProps = {
+//   tree?: TreeGardenNode | string,
+//   dataSample?: TreeGardenDataSample | string
+// };
+
 const DataAndTree = () => {
   const { currentTree, currentSample, setOpenedNode } = useContext(AppDataContext);
   // arrays are not supported yet
@@ -46,6 +53,9 @@ const DataAndTree = () => {
   }/>;
 };
 
+
+// todo place data here propagate it to:             <TrainedTreeInput />
+//             <DataSampleInput/>
 export const Board = () => (
     <ThemeProvider theme={treeGardenTheme as any}>
       <AppDataContextProvider>

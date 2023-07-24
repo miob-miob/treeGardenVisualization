@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Board} from 'tree-garden-visualization'
+import {Board} from './src'
 
 
 const App = () => {
