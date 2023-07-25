@@ -60,6 +60,10 @@ type Props = {
 
 const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
+const keepInRange = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+
+// window.sharedRelativePointerPos = {x: 0, y: 0}
+
 export const TreeVisualization = (
   {
     tree,
@@ -106,8 +110,35 @@ export const TreeVisualization = (
     const currentViewXPercent = ref.current.clientWidth / newScaledWidth;
     const currentViewYPercent = ref.current.clientHeight / newScaledHeight;
 
-    ref.current.scrollLeft += (((newScaledWidth * currentViewXPercent) / 2) * xPxZoomCoefficient)
-    ref.current.scrollTop += (((newScaledHeight * currentViewYPercent) / 2) * yPxZoomCoefficient)
+    ref.current.scrollLeft += (((newScaledWidth * currentViewXPercent) / 2) * xPxZoomCoefficient);
+    ref.current.scrollTop += (((newScaledHeight * currentViewYPercent) / 2) * yPxZoomCoefficient);
+  }, [zoom]);
+
+
+  useEffect(() => {
+    const doScroll = (e: any) => {
+      const isCmd = e.metaKey;
+
+      if (!isCmd) return
+
+
+      // const cursorPos = {
+      //   x: e.offsetX,
+      //   y: e.offsetY
+      // };
+      // console.log(cursorPos)
+      // window.sharedRelativePointerPos = cursorPos
+      e.preventDefault();
+      e.stopPropagation();
+      setZoom((p) => {
+        const newValue = e.deltaY < 0 ? p + 0.1 : p - 0.1;
+        return keepInRange(newValue, 1, 10);
+      });
+    };
+
+    ref.current.addEventListener('wheel', doScroll);
+
+    return () => ref.current.removeEventListener('wheel', doScroll);
   }, [zoom]);
 
   return (
