@@ -62,7 +62,7 @@ const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
 const keepInRange = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-// window.sharedRelativePointerPos = {x: 0, y: 0}
+// window.sharedRelativePointerPos = { x: 0, y: 0 };
 
 export const TreeVisualization = (
   {
@@ -107,9 +107,12 @@ export const TreeVisualization = (
     // -----------------------------------
     // change of zoom per px for center of current view...
 
+    // console.log(window.sharedRelativePointerPos)
+    // ref.current.scrollLeft += window.sharedRelativePointerPos.x * xPxZoomCoefficient ;
+    // ref.current.scrollTop += window.sharedRelativePointerPos.y * yPxZoomCoefficient ;
+
     const currentViewXPercent = ref.current.clientWidth / newScaledWidth;
     const currentViewYPercent = ref.current.clientHeight / newScaledHeight;
-
     ref.current.scrollLeft += (((newScaledWidth * currentViewXPercent) / 2) * xPxZoomCoefficient);
     ref.current.scrollTop += (((newScaledHeight * currentViewYPercent) / 2) * yPxZoomCoefficient);
   }, [zoom]);
@@ -117,17 +120,17 @@ export const TreeVisualization = (
 
   useEffect(() => {
     const doScroll = (e: any) => {
+      console.log('ahoj');
       const isCmd = e.metaKey;
 
-      if (!isCmd) return
+      if (!isCmd) return;
 
 
       // const cursorPos = {
       //   x: e.offsetX,
       //   y: e.offsetY
       // };
-      // console.log(cursorPos)
-      // window.sharedRelativePointerPos = cursorPos
+      // window.sharedRelativePointerPos = cursorPos;
       e.preventDefault();
       e.stopPropagation();
       setZoom((p) => {
@@ -136,9 +139,25 @@ export const TreeVisualization = (
       });
     };
 
-    ref.current.addEventListener('wheel', doScroll);
 
-    return () => ref.current.removeEventListener('wheel', doScroll);
+    const onDblClick = (e) => {
+      // const cursorPos = {
+      //   x: e.offsetX,
+      //   y: e.offsetY
+      // };
+      // window.sharedRelativePointerPos = cursorPos;
+      // console.log(window.sharedRelativePointerPos)
+      // console.log(zoom)
+      setZoom((p) => keepInRange(p + 0.1, 1, 10));
+    }
+
+    ref.current.addEventListener('wheel', doScroll);
+    ref.current.addEventListener('dblclick', onDblClick)
+
+    return () => {
+      ref.current.removeEventListener('wheel', doScroll);
+      ref.current.removeEventListener('dblclick', onDblClick);
+    }
   }, [zoom]);
 
   return (
