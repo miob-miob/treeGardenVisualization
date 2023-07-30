@@ -35,6 +35,7 @@ const MainSvgContainer = styled.div<{ size:string }>`
   
 `;
 
+
 // transform: scale(${({ zoom }) => zoom}) translate(${({ zoom }) => zoom * 10}%, ${({ zoom }) => zoom * 10}%);
 const MainSvg = styled.svg<{ zoom:number, size:string }>`
   transform-origin: left top;
@@ -62,7 +63,57 @@ const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
 const keepInRange = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-// window.sharedRelativePointerPos = { x: 0, y: 0 };
+const STEP_ZOOM = 0.1;
+
+/**
+ * storing unrounded results of computed scroll position change
+ *
+ * by default HTML elements are rounding scroll position into integers
+ * this hook helps you to change scroll position + keep stored unrounded data
+ */
+const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
+  // => HTML is rounding scroll from float into int
+  const [unroundedScrollX, setUnroundedScrollX] = useState(ref.current?.scrollLeft ?? 0);
+  const [unroundedScrollY, setUnroundedScrollY] = useState(ref.current?.scrollTop ?? 0);
+
+  const ignoreNextScrollEvent = useRef(false);
+
+  useEffect(() => {
+    const onScroll = (e: any) => {
+      // ignore only one calling
+      if (ignoreNextScrollEvent.current === true) {
+        ignoreNextScrollEvent.current = false;
+        return;
+      }
+      setUnroundedScrollX(e.target.scrollLeft);
+      setUnroundedScrollY(e.target.scrollTop);
+    };
+
+    ref.current?.addEventListener('scroll', onScroll);
+    return () => ref.current?.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return {
+    left: unroundedScrollX,
+    setLeft: (newX: number) => {
+      setUnroundedScrollX(newX);
+      ignoreNextScrollEvent.current = true;
+      // assigning float into scroll round scroll into integer
+      // eslint-disable-next-line no-param-reassign
+      ref.current!.scrollLeft = newX;
+    },
+
+    top: unroundedScrollY,
+    setTop: (newY: number) => {
+      setUnroundedScrollY(newY);
+      ignoreNextScrollEvent.current = true;
+      // assigning float into scroll round scroll into integer
+      // eslint-disable-next-line no-param-reassign
+      ref.current!.scrollTop = newY;
+    }
+  };
+};
+
 
 export const TreeVisualization = (
   {
@@ -85,80 +136,99 @@ export const TreeVisualization = (
   const ref = useRef<any>(null);
   const [prevZoom, setPrevZoom] = useState(zoom);
 
+  const viewElementScroll = useUnroundedScrollElement(ref);
+
+
+  // Power says that its not linear zoom, but exponent is constant value
+  const computePowerZoom = (pZoom: number) => {
+    // const a = 1.05;
+    const a = 1.05;
+    const b = 1.1;
+    // Math.exp vs quadratic
+    const newZoom = (a * pZoom) ** b;
+    return newZoom;
+  };
+
+  const setZoomIn = () => {
+    setZoom((pZoom) => {
+      const newZoom = computePowerZoom(pZoom);
+      return keepInRange(newZoom, 1, 10);
+    });
+  };
+
+  const setZoomOut = () => {
+    setZoom((pZoom) => {
+      const newZoom = computePowerZoom(pZoom);
+      const x = pZoom - newZoom;
+      return keepInRange(pZoom + x, 1, 10);
+    });
+  };
+
   useEffect(() => {
     if (!ref || !ref.current) return;
 
-    setPrevZoom(zoom);
-
-    // make scrolling fixed to left top corner
+    // computing zoom by myself instead of reading ref.current.children[0].getBoundingClientRect()
+    // from HTML ref do different in computing ~0.03% which is too small to take care about it
     const prevScaledWidth = ref.current.clientWidth * prevZoom;
     const prevScaledHeight = ref.current.clientHeight * prevZoom;
-
     const newScaledWidth = ref.current.clientWidth * zoom;
     const newScaledHeight = ref.current.clientHeight * zoom;
 
+    const xPxZoomCoefficientDiff = ((newScaledWidth / prevScaledWidth)) - 1;
+    const yPxZoomCoefficientDiff = ((newScaledHeight / prevScaledHeight)) - 1;
 
-    const xPxZoomCoefficient = (1 - (prevScaledWidth / newScaledWidth));
-    const yPxZoomCoefficient = (1 - (prevScaledHeight / newScaledHeight));
+    // CSS blocks do math round for scrolling => so its starts to glitching for few pixels ber many zooming
+    let newScrollLeft = viewElementScroll.left * (1 + xPxZoomCoefficientDiff);
+    let newScrollTop = viewElementScroll.top * (1 + yPxZoomCoefficientDiff);
 
-    ref.current.scrollLeft += ref.current.scrollLeft * xPxZoomCoefficient;
-    ref.current.scrollTop += ref.current.scrollTop * yPxZoomCoefficient;
+    // default zoom to the center
+    const center = {
+      x: ref.current.clientWidth / 2,
+      y: ref.current.clientHeight / 2
+    };
+    newScrollLeft += ((center.x) * xPxZoomCoefficientDiff);
+    newScrollTop += ((center.y) * yPxZoomCoefficientDiff);
 
-    // -----------------------------------
-    // change of zoom per px for center of current view...
+    // ---- apply computing into HTML elements -------
+    viewElementScroll.setLeft(newScrollLeft);
+    viewElementScroll.setTop(newScrollTop);
 
-    // console.log(window.sharedRelativePointerPos)
-    // ref.current.scrollLeft += window.sharedRelativePointerPos.x * xPxZoomCoefficient ;
-    // ref.current.scrollTop += window.sharedRelativePointerPos.y * yPxZoomCoefficient ;
-
-    const currentViewXPercent = ref.current.clientWidth / newScaledWidth;
-    const currentViewYPercent = ref.current.clientHeight / newScaledHeight;
-    ref.current.scrollLeft += (((newScaledWidth * currentViewXPercent) / 2) * xPxZoomCoefficient);
-    ref.current.scrollTop += (((newScaledHeight * currentViewYPercent) / 2) * yPxZoomCoefficient);
+    setPrevZoom(zoom);
   }, [zoom]);
 
 
   useEffect(() => {
-    const doScroll = (e: any) => {
-      console.log('ahoj');
+    const onKeyDown = (e: any) => {
+      if (e.key === '+') {
+        setZoomIn();
+      } else if (e.key === '-') {
+        setZoomOut();
+      }
+    };
+
+    const doWheelScroll = (e: any) => {
       const isCmd = e.metaKey;
 
       if (!isCmd) return;
 
-
-      // const cursorPos = {
-      //   x: e.offsetX,
-      //   y: e.offsetY
-      // };
-      // window.sharedRelativePointerPos = cursorPos;
       e.preventDefault();
       e.stopPropagation();
-      setZoom((p) => {
-        const newValue = e.deltaY < 0 ? p + 0.1 : p - 0.1;
-        return keepInRange(newValue, 1, 10);
-      });
+      if (e.deltaY < 0) {
+        setZoomIn();
+      } else {
+        setZoomOut();
+      }
     };
 
 
-    const onDblClick = (e) => {
-      // const cursorPos = {
-      //   x: e.offsetX,
-      //   y: e.offsetY
-      // };
-      // window.sharedRelativePointerPos = cursorPos;
-      // console.log(window.sharedRelativePointerPos)
-      // console.log(zoom)
-      setZoom((p) => keepInRange(p + 0.1, 1, 10));
-    }
-
-    ref.current.addEventListener('wheel', doScroll);
-    ref.current.addEventListener('dblclick', onDblClick)
+    ref.current.addEventListener('wheel', doWheelScroll);
+    window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      ref.current.removeEventListener('wheel', doScroll);
-      ref.current.removeEventListener('dblclick', onDblClick);
-    }
-  }, [zoom]);
+      ref.current.removeEventListener('wheel', doWheelScroll);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
 
   return (
     // to be able to use this component stand alone, we will need extra styled provider
