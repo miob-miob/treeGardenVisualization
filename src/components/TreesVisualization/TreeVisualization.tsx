@@ -63,13 +63,13 @@ const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
 const keepInRange = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
-const STEP_ZOOM = 0.1;
-
 /**
  * storing unrounded results of computed scroll position change
  *
  * by default HTML elements are rounding scroll position into integers
  * this hook helps you to change scroll position + keep stored unrounded data
+ *
+ * without this hook the UI will start to glitching a few pixels every zoom change
  */
 const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
   // => HTML is rounding scroll from float into int
@@ -133,36 +133,18 @@ export const TreeVisualization = (
   const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
   const sizeAndUnit = getVisualizationElementSize(size, sizeUnit);
 
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const [prevZoom, setPrevZoom] = useState(zoom);
 
   const viewElementScroll = useUnroundedScrollElement(ref);
 
 
   // Power says that its not linear zoom, but exponent is constant value
-  const computePowerZoom = (pZoom: number) => {
-    // const a = 1.05;
-    const a = 1.05;
-    const b = 1.1;
-    // Math.exp vs quadratic
-    const newZoom = (a * pZoom) ** b;
-    return newZoom;
-  };
+  const computePowerZoom = (pZoom: number) => (1.05 * pZoom) ** 1.1;
 
-  const setZoomIn = () => {
-    setZoom((pZoom) => {
-      const newZoom = computePowerZoom(pZoom);
-      return keepInRange(newZoom, 1, 10);
-    });
-  };
+  const setZoomIn = () => setZoom((pZoom) => keepInRange(computePowerZoom(pZoom), 1, 10));
 
-  const setZoomOut = () => {
-    setZoom((pZoom) => {
-      const newZoom = computePowerZoom(pZoom);
-      const x = pZoom - newZoom;
-      return keepInRange(pZoom + x, 1, 10);
-    });
-  };
+  const setZoomOut = () => setZoom((pZoom) => keepInRange(pZoom + pZoom - computePowerZoom(pZoom), 1, 10));
 
   useEffect(() => {
     if (!ref || !ref.current) return;
@@ -174,20 +156,15 @@ export const TreeVisualization = (
     const newScaledWidth = ref.current.clientWidth * zoom;
     const newScaledHeight = ref.current.clientHeight * zoom;
 
-    const xPxZoomCoefficientDiff = ((newScaledWidth / prevScaledWidth)) - 1;
-    const yPxZoomCoefficientDiff = ((newScaledHeight / prevScaledHeight)) - 1;
+    const xPxZoomCoefficient = newScaledWidth / prevScaledWidth;
+    const yPxZoomCoefficient = newScaledHeight / prevScaledHeight;
 
-    // CSS blocks do math round for scrolling => so its starts to glitching for few pixels ber many zooming
-    let newScrollLeft = viewElementScroll.left * (1 + xPxZoomCoefficientDiff);
-    let newScrollTop = viewElementScroll.top * (1 + yPxZoomCoefficientDiff);
+    let newScrollLeft = viewElementScroll.left * xPxZoomCoefficient;
+    let newScrollTop = viewElementScroll.top * yPxZoomCoefficient;
 
-    // default zoom to the center
-    const center = {
-      x: ref.current.clientWidth / 2,
-      y: ref.current.clientHeight / 2
-    };
-    newScrollLeft += ((center.x) * xPxZoomCoefficientDiff);
-    newScrollTop += ((center.y) * yPxZoomCoefficientDiff);
+    // zoom user view into the center, not left top corner
+    newScrollLeft += ((ref.current.clientWidth / 2) * (xPxZoomCoefficient - 1));
+    newScrollTop += ((ref.current.clientHeight / 2) * (yPxZoomCoefficient - 1));
 
     // ---- apply computing into HTML elements -------
     viewElementScroll.setLeft(newScrollLeft);
@@ -198,34 +175,26 @@ export const TreeVisualization = (
 
 
   useEffect(() => {
-    const onKeyDown = (e: any) => {
-      if (e.key === '+') {
-        setZoomIn();
-      } else if (e.key === '-') {
-        setZoomOut();
-      }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '+') setZoomIn();
+      else if (e.key === '-') setZoomOut();
     };
 
-    const doWheelScroll = (e: any) => {
+    const doWheelScroll = (e: WheelEvent) => {
       const isCmd = e.metaKey;
-
       if (!isCmd) return;
 
       e.preventDefault();
       e.stopPropagation();
-      if (e.deltaY < 0) {
-        setZoomIn();
-      } else {
-        setZoomOut();
-      }
+      if (e.deltaY < 0) setZoomIn();
+      else setZoomOut();
     };
 
-
-    ref.current.addEventListener('wheel', doWheelScroll);
+    ref.current?.addEventListener('wheel', doWheelScroll);
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      ref.current.removeEventListener('wheel', doWheelScroll);
+      ref.current?.removeEventListener('wheel', doWheelScroll);
       window.removeEventListener('keydown', onKeyDown);
     };
   }, []);
