@@ -63,6 +63,13 @@ const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
 const keepInRange = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
+// eslint-disable-next-line @typescript-eslint/comma-dangle
+const useStateNoRerender = <T,>(defVal: T) => {
+  const ref = useRef(defVal);
+  const set = (newVal: T) => { ref.current = newVal; };
+  return [ref.current, set] as [T, typeof set];
+};
+
 /**
  * storing unrounded results of computed scroll position change
  *
@@ -73,8 +80,9 @@ const keepInRange = (value: number, min: number, max: number) => Math.max(min, M
  */
 const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
   // => HTML is rounding scroll from float into int
-  const [unroundedScrollX, setUnroundedScrollX] = useState(ref.current?.scrollLeft ?? 0);
-  const [unroundedScrollY, setUnroundedScrollY] = useState(ref.current?.scrollTop ?? 0);
+  // TODO: don't use useState and use useRef for better performance and
+  const [unroundedScrollX, setUnroundedScrollX] = useStateNoRerender(ref.current?.scrollLeft ?? 0);
+  const [unroundedScrollY, setUnroundedScrollY] = useStateNoRerender(ref.current?.scrollTop ?? 0);
 
   const ignoreNextScrollEvent = useRef(false);
 
@@ -138,9 +146,10 @@ export const TreeVisualization = (
 
   const viewElementScroll = useUnroundedScrollElement(ref);
 
+  console.log('rerender');
 
   // Power says that its not linear zoom, but exponent is constant value
-  const computePowerZoom = (pZoom: number) => (1.05 * pZoom) ** 1.1;
+  const computePowerZoom = (pZoom: number) => (1.05 * pZoom) ** 1.02;
 
   const setZoomIn = () => setZoom((pZoom) => keepInRange(computePowerZoom(pZoom), 1, 10));
 
