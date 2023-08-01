@@ -39,17 +39,11 @@ type Props = {
 
 const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
-export const TreeVisualization = (
-  {
-    tree,
-    sampleToDisplay,
-    label = 'Trained tree visualization',
-    onNodeClick = defaultOnNodeClick,
-    showHeader = true,
-    initialZoom = 1
-  }:Props
-) => {
-  const [zoom, setZoom] = useState(initialZoom);
+export const TreeVisualization = ({
+  tree,
+  sampleToDisplay,
+  onNodeClick = defaultOnNodeClick
+}: Props) => {
   const doWeHaveTree = tree !== null;
   // todo remove 'as' with multiple trees support
   const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
@@ -61,7 +55,7 @@ export const TreeVisualization = (
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
       <MainContainer>
-        {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>}
+        {/* {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>} */}
 
         {doWeHaveTree && (
           <ZoomableWrapper width={width} height={height}>

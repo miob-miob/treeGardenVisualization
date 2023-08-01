@@ -153,12 +153,6 @@ export const ZoomableWrapper = (props: {
     setPrevZoom(zoom);
   }, [zoom]);
 
-
-  useEffect(() => {
-    // setZoomIn(1.8);
-    ref.current?.focus();
-  }, []);
-
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === '+') setZoomIn(1.15);
@@ -177,11 +171,22 @@ export const ZoomableWrapper = (props: {
 
 
     const onMouseMove = (e: MouseEvent) => {
+      // I need to force user to click into the screen and focus to the page to not to have bugged UI
+      if (document.hasFocus() === false) {
+        // eslint-disable-next-line no-param-reassign
+        ref.current!.style.overflow = 'hidden';
+        // eslint-disable-next-line no-param-reassign
+        return;
+      }
+      ref.current!.style.overflow = 'auto';
+
+      //
       const rect = ref.current?.getBoundingClientRect()!;
       cursorPos.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
       };
+      // console.log(cursorPos.current);
     };
 
     ref.current?.addEventListener('wheel', doWheelScroll);
