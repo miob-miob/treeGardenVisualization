@@ -71,6 +71,33 @@ const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
 };
 
 
+const useWindowFocus = (cb?: (isFocused: boolean) => void) => {
+  const [isFocused, setIsFocused] = useState(document.hasFocus());
+
+  useEffect(() => {
+    const onFocus = () => {
+      setIsFocused(true);
+      cb?.(true);
+    };
+
+    const onBlur = () => {
+      setIsFocused(false);
+      cb?.(false);
+    };
+
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('blur', onBlur);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('blur', onBlur);
+    };
+  }, []);
+
+  return isFocused;
+};
+
+
 const DivZoomableWrapper = styled.div<{ width: string | number; height: string | number }>`
   width: ${(p) => p.width};
   height: ${(p) => p.height};
@@ -79,6 +106,10 @@ const DivZoomableWrapper = styled.div<{ width: string | number; height: string |
   display: flex;
   flex-direction: row;
   overflow: auto;
+  
+  ::-webkit-scrollbar { 
+    width: 1 !important
+  }
 `;
 
 const DivNested = styled.div<{ width: string | number; height: string | number; zoom: number }>`
@@ -102,6 +133,14 @@ export const ZoomableWrapper = (props: {
   const [zoom, setZoom] = useState(1);
   const [prevZoom, setPrevZoom] = useState(zoom);
 
+  const isWindowFocused = useWindowFocus((isFocused) => {
+    if (isFocused) {
+      ref.current!.style.overflow = 'auto';
+    } else {
+      ref.current!.style.overflow = 'hidden';
+    }
+  });
+
   const viewElementScroll = useUnroundedScrollElement(ref);
 
   const cursorPos = useRef(null as { x: number; y: number } | null);
@@ -119,6 +158,8 @@ export const ZoomableWrapper = (props: {
     setZoom((pZoom) => normalizeZoom(pZoom + pZoom - computePowerZoom(pZoom, scale)));
   };
 
+
+  // TODO: there is weird bug with scroller memory when we get out of ranges
   useEffect(() => {
     if (!ref || !ref.current) return;
 
@@ -145,7 +186,6 @@ export const ZoomableWrapper = (props: {
     newScrollLeft += (zoomPoint.x * (xPxZoomCoefficient - 1));
     newScrollTop += (zoomPoint.y * (yPxZoomCoefficient - 1));
 
-    // console.log(newScrollLeft, newScrollTop);
     // ---- apply computing into HTML elements -------
     viewElementScroll.setLeft(newScrollLeft);
     viewElementScroll.setTop(newScrollTop);
@@ -155,11 +195,13 @@ export const ZoomableWrapper = (props: {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (isWindowFocused === false) return;
       if (e.key === '+') setZoomIn(1.15);
       else if (e.key === '-') setZoomOut(1.15);
     };
 
     const doWheelScroll = (e: WheelEvent) => {
+      if (isWindowFocused === false) return;
       const isCmd = e.metaKey;
       if (!isCmd) return;
 
@@ -171,22 +213,11 @@ export const ZoomableWrapper = (props: {
 
 
     const onMouseMove = (e: MouseEvent) => {
-      // I need to force user to click into the screen and focus to the page to not to have bugged UI
-      if (document.hasFocus() === false) {
-        // eslint-disable-next-line no-param-reassign
-        ref.current!.style.overflow = 'hidden';
-        // eslint-disable-next-line no-param-reassign
-        return;
-      }
-      ref.current!.style.overflow = 'auto';
-
-      //
       const rect = ref.current?.getBoundingClientRect()!;
       cursorPos.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
       };
-      // console.log(cursorPos.current);
     };
 
     ref.current?.addEventListener('wheel', doWheelScroll);
@@ -198,19 +229,42 @@ export const ZoomableWrapper = (props: {
       ref.current?.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, []);
-
+  }, [isWindowFocused]);
 
   return (
-    <DivZoomableWrapper width={props.width} height={props.height} ref={ref}>
-      <DivNested
-        width={props.width}
-        height={props.height}
-        zoom={zoom}
-        style={{ padding: '15rem' }}
-      >
-        {props.children}
-      </DivNested>
-    </DivZoomableWrapper>
+    <div style={{
+      width: props.width,
+      height: props.height,
+      position: 'relative'
+    }}>
+      {/* to manipulate and properly analyze cursor position we need to have focused user in the page */}
+      {!isWindowFocused && <div style={{
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        background: 'rgba(0, 0, 0, 0.05)',
+        width: '100%',
+        height: '100%',
+        zIndex: 10,
+        display: 'flex'
+      }}>
+        <div style={{
+          margin: 'auto', fontSize: '5rem', color: 'white', background: 'rgba(0, 0, 0, 0.4)', padding: '1rem'
+        }}>
+          click to view
+        </div>
+      </div>}
+
+      <DivZoomableWrapper width={props.width} height={props.height} ref={ref} >
+        <DivNested
+          width={props.width}
+          height={props.height}
+          zoom={zoom}
+          style={{ padding: '15rem' }}
+        >
+          {props.children}
+        </DivNested>
+      </DivZoomableWrapper>
+    </div>
   );
 };

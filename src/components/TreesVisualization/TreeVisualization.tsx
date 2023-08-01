@@ -12,6 +12,7 @@ import { ZoomableWrapper } from './ZoomableWrapper';
 // ---------------
 
 const MainContainer = styled.div`
+  padding-top: 1rem;
   display: flex;
   margin-bottom: 1em;
   flex-direction: column;
