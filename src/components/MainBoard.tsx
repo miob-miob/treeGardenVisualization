@@ -12,7 +12,9 @@ import { TreeVisualization } from './TreesVisualization/TreeVisualization';
 import { OpenedNodePopup } from './OpenedNodePopup';
 
 const MainContainer = styled.div`
-  background-color: ${({ theme }) => theme.color1};
+  // TODO: background is not properly applied for tree view
+  // background-color: red;
+  // background-color: ${({ theme }) => theme.color1};
   color: ${({ theme }) => theme.color4};
   //padding: 2em;
   display: flex;

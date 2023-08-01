@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable max-len */
 import React, { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -5,13 +6,6 @@ import styled from 'styled-components';
 // --------
 
 const keepInRange = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-
-// eslint-disable-next-line @typescript-eslint/comma-dangle
-const useStateNoRerender = <T,>(defVal: T) => {
-  const ref = useRef(defVal);
-  const set = (newVal: T) => { ref.current = newVal; };
-  return [ref.current, set] as [T, typeof set];
-};
 
 /**
  * storing unrounded results of computed scroll position change
@@ -24,8 +18,8 @@ const useStateNoRerender = <T,>(defVal: T) => {
 const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
   // => HTML is rounding scroll from float into int
   // TODO: don't use useState and use useRef for better performance and
-  const [unroundedScrollX, setUnroundedScrollX] = useStateNoRerender(ref.current?.scrollLeft ?? 0);
-  const [unroundedScrollY, setUnroundedScrollY] = useStateNoRerender(ref.current?.scrollTop ?? 0);
+  const unroundedScrollX = useRef(ref.current?.scrollLeft ?? 0);
+  const unroundedScrollY = useRef(ref.current?.scrollTop ?? 0);
 
   const ignoreNextScrollEvent = useRef(false);
 
@@ -37,8 +31,8 @@ const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
         return;
       }
       // console.log(e.target.scrollLeft, e.target.scrollTop);
-      setUnroundedScrollX(e.target.scrollLeft);
-      setUnroundedScrollY(e.target.scrollTop);
+      unroundedScrollX.current = e.target.scrollLeft;
+      unroundedScrollY.current = e.target.scrollTop;
     };
 
     ref.current?.addEventListener('scroll', onScroll);
@@ -50,7 +44,7 @@ const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
     setLeft: (_newX: number) => {
       // coordinations cannot be smaller than 0
       const newX = Math.max(0, _newX);
-      setUnroundedScrollX(newX);
+      unroundedScrollX.current = newX;
       ignoreNextScrollEvent.current = true;
       // assigning float into scroll round scroll into integer
       // eslint-disable-next-line no-param-reassign
@@ -61,7 +55,7 @@ const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
     setTop: (_newY: number) => {
       // coordinations cannot be smaller than 0
       const newY = Math.max(0, _newY);
-      setUnroundedScrollY(newY);
+      unroundedScrollY.current = newY;
       ignoreNextScrollEvent.current = true;
       // assigning float into scroll round scroll into integer
       // eslint-disable-next-line no-param-reassign
@@ -97,31 +91,6 @@ const useWindowFocus = (cb?: (isFocused: boolean) => void) => {
   return isFocused;
 };
 
-
-const DivZoomableWrapper = styled.div<{ width: string | number; height: string | number }>`
-  width: ${(p) => p.width};
-  height: ${(p) => p.height};
-  border: 1px solid ${({ theme }) => theme.color2};
-  border-radius: ${({ theme }) => theme.sizes.borderRadius};
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  
-  ::-webkit-scrollbar { 
-    width: 1 !important
-  }
-`;
-
-const DivNested = styled.div<{ width: string | number; height: string | number; zoom: number }>`
-  transform: scale(${({ zoom }) => zoom});
-  width: ${(p) => p.width};
-  height: ${(p) => p.height};
-  transform-origin: left top;
-  margin:auto;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-`;
 
 export const ZoomableWrapper = (props: {
   children: React.ReactNode
@@ -173,8 +142,8 @@ export const ZoomableWrapper = (props: {
     const xPxZoomCoefficient = newScaledWidth / prevScaledWidth;
     const yPxZoomCoefficient = newScaledHeight / prevScaledHeight;
 
-    let newScrollLeft = viewElementScroll.left * xPxZoomCoefficient;
-    let newScrollTop = viewElementScroll.top * yPxZoomCoefficient;
+    let newScrollLeft = viewElementScroll.left.current * xPxZoomCoefficient;
+    let newScrollTop = viewElementScroll.top.current * yPxZoomCoefficient;
 
 
     // TODO: check mobile version UI/UX
@@ -232,39 +201,83 @@ export const ZoomableWrapper = (props: {
   }, [isWindowFocused]);
 
   return (
-    <div style={{
-      width: props.width,
-      height: props.height,
-      position: 'relative'
-    }}>
+    <Wrapper width={props.width} height={props.height}>
       {/* to manipulate and properly analyze cursor position we need to have focused user in the page */}
-      {!isWindowFocused && <div style={{
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        background: 'rgba(0, 0, 0, 0.05)',
-        width: '100%',
-        height: '100%',
-        zIndex: 10,
-        display: 'flex'
-      }}>
-        <div style={{
-          margin: 'auto', fontSize: '5rem', color: 'white', background: 'rgba(0, 0, 0, 0.4)', padding: '1rem'
-        }}>
+      {!isWindowFocused && <DivOverlay>
+        <DivOverlayText>
           click to view
-        </div>
-      </div>}
+          <DivOverlaySmallText>
+            use +, - or cmd+scroll to zoomIn
+          </DivOverlaySmallText>
+        </DivOverlayText>
+        </DivOverlay>
+     }
 
       <DivZoomableWrapper width={props.width} height={props.height} ref={ref} >
         <DivNested
           width={props.width}
           height={props.height}
           zoom={zoom}
-          style={{ padding: '15rem' }}
         >
           {props.children}
         </DivNested>
       </DivZoomableWrapper>
-    </div>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div<{ width: string | number; height: string | number }>`
+  width: ${(p) => p.width};
+  height: ${(p) => p.height};
+  position: relative;
+`;
+
+const DivOverlay = styled.div` 
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.05);
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+`;
+
+const DivOverlayText = styled.div` 
+  text-align: center;
+  margin: auto;
+  font-size: 3rem;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 1rem;
+`;
+
+const DivOverlaySmallText = styled.div` 
+ font-size: 1.5rem;
+`;
+
+const DivZoomableWrapper = styled.div<{ width: string | number; height: string | number }>`
+  width: ${(p) => p.width};
+  height: ${(p) => p.height};
+  border: 1px solid ${({ theme }) => theme.color2};
+  border-radius: ${({ theme }) => theme.sizes.borderRadius};
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  
+  ::-webkit-scrollbar { 
+    width: 1 !important
+  }
+`;
+
+const DivNested = styled.div<{ width: string | number; height: string | number; zoom: number }>`
+  transform: scale(${({ zoom }) => zoom});
+  width: ${(p) => p.width};
+  height: ${(p) => p.height};
+  transform-origin: left top;
+  margin:auto;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 15rem;
+`;
