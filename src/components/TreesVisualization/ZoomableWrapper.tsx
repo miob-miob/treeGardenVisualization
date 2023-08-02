@@ -96,6 +96,7 @@ export const ZoomableWrapper = (props: {
   children: React.ReactNode
   width: string | number
   height: string | number
+  // scale + zoom should be computed based on window.innerWidth
   maxScale?: number
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -117,7 +118,7 @@ export const ZoomableWrapper = (props: {
   const computePowerZoom = (pZoom: number, scale = 1.02) => (scale * pZoom) ** 1.005;
   //   const computePowerZoom = (pZoom: number) => (1.05 * pZoom) ** 1.02;
 
-  const normalizeZoom = (newZoom: number) => keepInRange(newZoom, 1, props.maxScale ?? 20);
+  const normalizeZoom = (newZoom: number) => keepInRange(newZoom, 1.2, props.maxScale ?? 20);
 
   const setZoomIn = (scale?: number) => {
     setZoom((pZoom) => normalizeZoom(computePowerZoom(pZoom, scale)));
