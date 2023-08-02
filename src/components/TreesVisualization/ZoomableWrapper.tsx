@@ -258,7 +258,7 @@ const DivOverlaySmallText = styled.div`
 `;
 
 const DivZoomableWrapper = styled.div<{ width: string | number; height: string | number }>`
-  width: ${(p) => p.width};
+width: ${(p) => p.width};
   height: ${(p) => p.height};
   border: 1px solid ${({ theme }) => theme.color2};
   border-radius: ${({ theme }) => theme.sizes.borderRadius};
@@ -266,9 +266,10 @@ const DivZoomableWrapper = styled.div<{ width: string | number; height: string |
   flex-direction: row;
   overflow: auto;
   
-  ::-webkit-scrollbar { 
-    width: 1 !important
-  }
+  // hiding scroller
+  // ::-webkit-scrollbar { 
+  //   width: 1 !important
+  // }
 `;
 
 const DivNested = styled.div<{ width: string | number; height: string | number; zoom: number }>`

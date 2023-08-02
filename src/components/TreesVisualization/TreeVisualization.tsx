@@ -49,17 +49,14 @@ export const TreeVisualization = ({
   // todo remove 'as' with multiple trees support
   const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
 
-  const width = '100%';
-  const height = '85vh';
-
   return (
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
-      <MainContainer>
+      <MainContainer style={{ width: '95%' }}>
         {/* {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>} */}
 
         {doWeHaveTree && (
-          <ZoomableWrapper width={width} height={height}>
+          <ZoomableWrapper width={'100%'} height={'85vh'}>
             <MainSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
               <Tree onClick={onNodeClick} visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
             </MainSvg>
