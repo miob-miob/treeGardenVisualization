@@ -53,7 +53,6 @@ export const TreeVisualization = ({
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
       <MainContainer style={{ width: '95%' }}>
-        {/* {showHeader && <VisualizationHeader tree={tree} label={label} zoom={zoom} onZoomChanged={(value) => { setZoom(value); }}/>} */}
 
         {doWeHaveTree && (
           <ZoomableWrapper width={'100%'} height={'85vh'}>

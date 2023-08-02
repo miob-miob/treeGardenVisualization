@@ -99,6 +99,9 @@ export const ZoomableWrapper = (props: {
   // scale + zoom should be computed based on window.innerWidth
   maxScale?: number
 }) => {
+  const maxScale = props.maxScale ?? 20;
+  const minScale = 1.2;
+
   const ref = useRef<HTMLDivElement | null>(null);
   const [zoom, setZoom] = useState(1);
   const [prevZoom, setPrevZoom] = useState(zoom);
@@ -118,7 +121,8 @@ export const ZoomableWrapper = (props: {
   const computePowerZoom = (pZoom: number, scale = 1.02) => (scale * pZoom) ** 1.005;
   //   const computePowerZoom = (pZoom: number) => (1.05 * pZoom) ** 1.02;
 
-  const normalizeZoom = (newZoom: number) => keepInRange(newZoom, 1.2, props.maxScale ?? 20);
+
+  const normalizeZoom = (newZoom: number) => keepInRange(newZoom, minScale, maxScale);
 
   const setZoomIn = (scale?: number) => {
     setZoom((pZoom) => normalizeZoom(computePowerZoom(pZoom, scale)));
@@ -201,14 +205,27 @@ export const ZoomableWrapper = (props: {
     };
   }, [isWindowFocused]);
 
+
   return (
     <Wrapper width={props.width} height={props.height}>
+
+      <Zoom
+        value={zoom}
+        min={1}
+        max={maxScale}
+        step={0.05}
+        onChange={(event) => {
+          cursorPos.current = null;
+          setZoom(normalizeZoom(parseFloat(event.target.value)));
+        }}
+      />
+
       {/* to manipulate and properly analyze cursor position we need to have focused user in the page */}
       {!isWindowFocused && <DivOverlay>
         <DivOverlayText>
           click to view
           <DivOverlaySmallText>
-            use +, - or cmd+scroll to zoomIn
+            use +, - or cmd+scroll to zoom in
           </DivOverlaySmallText>
         </DivOverlayText>
         </DivOverlay>
@@ -227,10 +244,35 @@ export const ZoomableWrapper = (props: {
   );
 };
 
+const Zoom = styled.input.attrs({ type: 'range' })`
+  margin: auto;
+  margin-bottom: 1rem;
+  -webkit-appearance: none;
+  ::-webkit-slider-runnable-track {
+    height: 8px;
+    background: ${({ theme }) => theme.color2};
+    border: none;
+    border-radius: 3px;
+  }
+
+  ::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.color3};
+    margin-top: -4px;
+  }
+  
+`;
+
 const Wrapper = styled.div<{ width: string | number; height: string | number }>`
   width: ${(p) => p.width};
   height: ${(p) => p.height};
-  position: relative;
+  position: relative; // Need to have position relative to compute relative cursor position
+  display: flex;
+  flex-direction: column;
 `;
 
 const DivOverlay = styled.div` 
