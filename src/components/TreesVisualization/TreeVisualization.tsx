@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { TreeGardenNode, TreeGardenDataSample } from 'tree-garden';
-import { VisualizationHeader } from './VisualizationHeader';
+// import { VisualizationHeader } from './VisualizationHeader';
 import { Tree } from './TreeSvg';
 import { getDataForVisualization } from '../../utils/tree';
 import { treeGardenTheme } from '../../theme';
@@ -17,7 +17,7 @@ const MainContainer = styled.div`
   margin-bottom: 1em;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 95%;
 `;
 
 
@@ -52,7 +52,7 @@ export const TreeVisualization = ({
   return (
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
-      <MainContainer style={{ width: '95%' }}>
+      <MainContainer>
 
         {doWeHaveTree && (
           <ZoomableWrapper width={'100%'} height={'85vh'}>
