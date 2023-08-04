@@ -332,5 +332,5 @@ const DivNested = styled.div<{ zoom: number, width: string | number, height: str
   width: ${(p) => p.width};
   height: ${(p) => p.height};
   overflow: hidden;
-  padding: 0.1em;
+  padding: 1rem;
 `;
