@@ -100,12 +100,11 @@ export const ZoomableWrapper = (props: {
   maxScale?: number
 }) => {
   const maxScale = props.maxScale ?? 20;
-  const minScale = 1.2;
+  const minScale = 1.5;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [zoom, setZoom] = useState(1);
   const [prevZoom, setPrevZoom] = useState(zoom);
-
   const isWindowFocused = useWindowFocus((isFocused) => {
     if (isFocused) {
       ref.current!.style.overflow = 'auto';
@@ -168,6 +167,16 @@ export const ZoomableWrapper = (props: {
   }, [zoom]);
 
   useEffect(() => {
+    if (!ref || !ref.current) return;
+
+    cursorPos.current = {
+      x: ref.current.clientWidth / 2,
+      y: ref.current.clientHeight / 2
+    };
+    setZoom(minScale);
+  }, []);
+
+  useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (isWindowFocused === false) return;
       if (e.key === '+') setZoomIn(1.15);
@@ -211,7 +220,7 @@ export const ZoomableWrapper = (props: {
 
       <Zoom
         value={zoom}
-        min={1}
+        min={minScale}
         max={maxScale}
         step={0.05}
         onChange={(event) => {
@@ -233,8 +242,8 @@ export const ZoomableWrapper = (props: {
 
       <DivZoomableWrapper width={props.width} height={props.height} ref={ref} >
         <DivNested
-          width={props.width}
-          height={props.height}
+          // width={props.width}
+          // height={props.height}
           zoom={zoom}
         >
           {props.children}
@@ -314,14 +323,13 @@ width: ${(p) => p.width};
   // }
 `;
 
-const DivNested = styled.div<{ width: string | number; height: string | number; zoom: number }>`
+const DivNested = styled.div<{ zoom: number }>`
   transform: scale(${({ zoom }) => zoom});
-  width: ${(p) => p.width};
-  height: ${(p) => p.height};
+
   transform-origin: left top;
   margin:auto;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   padding: 15rem;
 `;
