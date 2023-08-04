@@ -100,7 +100,7 @@ export const ZoomableWrapper = (props: {
   maxScale?: number
 }) => {
   const maxScale = props.maxScale ?? 20;
-  const minScale = 1.5;
+  const minScale = 1.05;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -237,13 +237,13 @@ export const ZoomableWrapper = (props: {
             use +, - or cmd+scroll to zoom in
           </DivOverlaySmallText>
         </DivOverlayText>
-        </DivOverlay>
-     }
+      </DivOverlay>
+      }
 
-      <DivZoomableWrapper width={props.width} height={props.height} ref={ref} >
+      <DivZoomableWrapper width={props.width} height={props.height} ref={ref}>
         <DivNested
-          // width={props.width}
-          // height={props.height}
+          width={props.width}
+          height={props.height}
           zoom={zoom}
         >
           {props.children}
@@ -257,6 +257,7 @@ const Zoom = styled.input.attrs({ type: 'range' })`
   margin: auto;
   margin-bottom: 1rem;
   -webkit-appearance: none;
+
   ::-webkit-slider-runnable-track {
     height: 8px;
     background: ${({ theme }) => theme.color2};
@@ -273,7 +274,7 @@ const Zoom = styled.input.attrs({ type: 'range' })`
     background: ${({ theme }) => theme.color3};
     margin-top: -4px;
   }
-  
+
 `;
 
 const Wrapper = styled.div<{ width: string | number; height: string | number }>`
@@ -284,7 +285,7 @@ const Wrapper = styled.div<{ width: string | number; height: string | number }>`
   flex-direction: column;
 `;
 
-const DivOverlay = styled.div` 
+const DivOverlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -295,7 +296,7 @@ const DivOverlay = styled.div`
   display: flex;
 `;
 
-const DivOverlayText = styled.div` 
+const DivOverlayText = styled.div`
   text-align: center;
   margin: auto;
   font-size: 3rem;
@@ -304,32 +305,32 @@ const DivOverlayText = styled.div`
   padding: 1rem;
 `;
 
-const DivOverlaySmallText = styled.div` 
- font-size: 1.5rem;
+const DivOverlaySmallText = styled.div`
+  font-size: 1.5rem;
 `;
 
 const DivZoomableWrapper = styled.div<{ width: string | number; height: string | number }>`
-width: ${(p) => p.width};
+  width: ${(p) => p.width};
   height: ${(p) => p.height};
   border: 1px solid ${({ theme }) => theme.color2};
   border-radius: ${({ theme }) => theme.sizes.borderRadius};
   display: flex;
   flex-direction: row;
   overflow: auto;
-  
+
   // hiding scroller
   // ::-webkit-scrollbar { 
   //   width: 1 !important
   // }
 `;
 
-const DivNested = styled.div<{ zoom: number }>`
+const DivNested = styled.div<{ zoom: number, width: string | number, height: string | number }>`
   transform: scale(${({ zoom }) => zoom});
 
   transform-origin: left top;
-  margin:auto;
-  width: 100%;
-  height: 100%;
+  margin: auto;
+  width: ${(p) => p.width};
+  height: ${(p) => p.height};
   overflow: hidden;
-  padding: 15rem;
+  padding: 0.1em;
 `;

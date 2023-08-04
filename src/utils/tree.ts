@@ -79,8 +79,8 @@ const getFontSize = (node:TreeGardenNode) => {
 
 const maxX = 1000;
 const maxY = 1000;
-const xOffset = 0;
-const yOffset = 15;
+const xOffset = 15;
+const yOffset = 30;
 
 const getNumberOfStages = (treeStages:TreeStages) => treeStages.length;
 const getMaximalNumberOfNodesOnStage = (treeStages:TreeStages) => Math.max(...treeStages.map((stage) => stage.flat(2).length));

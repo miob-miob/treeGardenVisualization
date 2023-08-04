@@ -17,7 +17,6 @@ const MainContainer = styled.div`
   margin-bottom: 1em;
   flex-direction: column;
   align-items: center;
-  width: 95%;
 `;
 
 
@@ -40,6 +39,13 @@ type Props = {
 
 const defaultOnNodeClick = (node:TreeGardenNode) => console.log(node);
 
+const getVisualizationElementSize = (number:number = 95, sizeUnit:string | null = null) => {
+  if (sizeUnit === null) {
+    return (window.innerWidth > window.innerHeight ? `${number}vh` : `${number}vw`);
+  }
+  return `${number}${sizeUnit}`;
+};
+
 export const TreeVisualization = ({
   tree,
   sampleToDisplay,
@@ -48,14 +54,14 @@ export const TreeVisualization = ({
   const doWeHaveTree = tree !== null;
   // todo remove 'as' with multiple trees support
   const visualizationData = useMemo(() => (tree ? getDataForVisualization(tree as TreeGardenNode, sampleToDisplay) : null), [tree, sampleToDisplay]);
-
+  const sizeAndUnit = getVisualizationElementSize();
   return (
     // to be able to use this component stand alone, we will need extra styled provider
     <ThemeProvider theme={treeGardenTheme as any}>
       <MainContainer>
 
         {doWeHaveTree && (
-          <ZoomableWrapper width={'100%'} height={'85vh'}>
+          <ZoomableWrapper width={sizeAndUnit} height={sizeAndUnit}>
             <MainSvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
               <Tree onClick={onNodeClick} visualizationData={visualizationData!} x={0} y={0} width={1000} height={1000}/>
             </MainSvg>
