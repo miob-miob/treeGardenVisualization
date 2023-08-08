@@ -183,15 +183,25 @@ export const ZoomableWrapper = (props: {
       else if (e.key === '-') setZoomOut(1.15);
     };
 
+
     const doWheelScroll = (e: WheelEvent) => {
       if (isWindowFocused === false) return;
-      const isCmd = e.metaKey;
-      if (!isCmd) return;
 
-      e.preventDefault();
-      e.stopPropagation();
-      if (e.deltaY < 0) setZoomIn();
-      else setZoomOut();
+
+      const isCmd = e.metaKey;
+
+      // macOS track-pad zooming
+      if (e.ctrlKey) {
+        e.stopPropagation();
+        e.preventDefault();
+        // setZoomIn();
+        setZoom((p) => normalizeZoom(p + -(e.deltaY * 0.03)));
+      } else if (isCmd) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.deltaY < 0) setZoomIn();
+        else setZoomOut();
+      }
     };
 
 
@@ -203,7 +213,8 @@ export const ZoomableWrapper = (props: {
       };
     };
 
-    ref.current?.addEventListener('wheel', doWheelScroll);
+
+    ref.current?.addEventListener('wheel', doWheelScroll, { passive: false });
     ref.current?.addEventListener('mousemove', onMouseMove);
     window.addEventListener('keydown', onKeyDown);
 
