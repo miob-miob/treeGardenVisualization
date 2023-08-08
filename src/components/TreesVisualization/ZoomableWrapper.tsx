@@ -186,8 +186,6 @@ export const ZoomableWrapper = (props: {
 
     const doWheelScroll = (e: WheelEvent) => {
       if (isWindowFocused === false) return;
-
-
       const isCmd = e.metaKey;
 
       // macOS track-pad zooming
@@ -212,7 +210,6 @@ export const ZoomableWrapper = (props: {
         y: e.clientY - rect.top
       };
     };
-
 
     ref.current?.addEventListener('wheel', doWheelScroll, { passive: false });
     ref.current?.addEventListener('mousemove', onMouseMove);
