@@ -41,25 +41,28 @@ const useUnroundedScrollElement = (ref: { current: HTMLElement | null }) => {
 
   return {
     left: unroundedScrollX,
-    setLeft: (_newX: number) => {
-      // coordinations cannot be smaller than 0
-      const newX = Math.max(0, _newX);
-      unroundedScrollX.current = newX;
+    setLeft: (newX: number) => {
+      if (!ref.current) return;
+      const maxScrollX = ref.current.scrollWidth - ref.current.clientWidth;
+      const normalizedNewX = keepInRange(newX, 0, maxScrollX);
+      unroundedScrollX.current = normalizedNewX;
       ignoreNextScrollEvent.current = true;
       // assigning float into scroll round scroll into integer
       // eslint-disable-next-line no-param-reassign
-      ref.current!.scrollLeft = newX;
+      ref.current!.scrollLeft = normalizedNewX;
     },
 
     top: unroundedScrollY,
-    setTop: (_newY: number) => {
-      // coordinations cannot be smaller than 0
-      const newY = Math.max(0, _newY);
-      unroundedScrollY.current = newY;
+    setTop: (newY: number) => {
+      if (!ref.current) return;
+      const maxScrollY = ref.current.scrollHeight - ref.current.clientHeight;
+      const normalizedNewY = keepInRange(newY, 0, maxScrollY);
+
+      unroundedScrollY.current = normalizedNewY;
       ignoreNextScrollEvent.current = true;
       // assigning float into scroll round scroll into integer
       // eslint-disable-next-line no-param-reassign
-      ref.current!.scrollTop = newY;
+      ref.current!.scrollTop = normalizedNewY;
     }
   };
 };
@@ -106,10 +109,11 @@ export const ZoomableWrapper = (props: {
   const [zoom, setZoom] = useState(1);
   const [prevZoom, setPrevZoom] = useState(zoom);
   const isWindowFocused = useWindowFocus((isFocused) => {
+    if (!ref.current) return;
     if (isFocused) {
-      ref.current!.style.overflow = 'auto';
+      ref.current.style.overflow = 'auto';
     } else {
-      ref.current!.style.overflow = 'hidden';
+      ref.current.style.overflow = 'hidden';
     }
   });
 
@@ -187,14 +191,12 @@ export const ZoomableWrapper = (props: {
     const doWheelScroll = (e: WheelEvent) => {
       if (isWindowFocused === false) return;
 
-
       const isCmd = e.metaKey;
 
       // macOS track-pad zooming
       if (e.ctrlKey) {
         e.stopPropagation();
         e.preventDefault();
-        // setZoomIn();
         setZoom((p) => normalizeZoom(p + -(e.deltaY * 0.03)));
       } else if (isCmd) {
         e.preventDefault();
