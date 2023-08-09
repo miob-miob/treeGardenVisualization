@@ -103,7 +103,7 @@ export const ZoomableWrapper = (props: {
   maxScale?: number
 }) => {
   const maxScale = props.maxScale ?? 20;
-  const minScale = 1.05;
+  const minScale = 1.0;
 
   const ref = useRef<HTMLDivElement | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -325,16 +325,13 @@ const DivOverlaySmallText = styled.div`
 const DivZoomableWrapper = styled.div<{ width: string | number; height: string | number }>`
   width: ${(p) => p.width};
   height: ${(p) => p.height};
+  min-height: ${(p) => p.height};
   border: 1px solid ${({ theme }) => theme.color2};
   border-radius: ${({ theme }) => theme.sizes.borderRadius};
   display: flex;
   flex-direction: row;
   overflow: auto;
-
-  // hiding scroller
-  // ::-webkit-scrollbar { 
-  //   width: 1 !important
-  // }
+  
 `;
 
 const DivNested = styled.div<{ zoom: number, width: string | number, height: string | number }>`
@@ -345,5 +342,4 @@ const DivNested = styled.div<{ zoom: number, width: string | number, height: str
   width: ${(p) => p.width};
   height: ${(p) => p.height};
   overflow: hidden;
-  padding: 1rem;
 `;

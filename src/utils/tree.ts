@@ -95,7 +95,7 @@ const nodeWidth = 8;
 const textOffsetX = 0.03;
 const textOffsetY = 0.03;
 
-export const getDataForVisualization = (tree:TreeGardenNode, projectedSample?:TreeGardenDataSample|null):VisualizationTreeData => {
+export const getDataForVisualization = (tree:TreeGardenNode, projectedSample?:TreeGardenDataSample | null):VisualizationTreeData => {
   try {
     // nodes are highlighted if sample hits it during way down to leaf
     const highlightedNodeIds = projectedSample ? getNodeIdsOfProjectedSample(tree, projectedSample) : [];
